@@ -1,0 +1,2782 @@
+Log file created at: 2016/08/03 17:00:47
+Running on machine: root0-SCW4350-159
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0803 17:00:47.000546  5831 caffe.cpp:185] Using GPUs 3
+I0803 17:00:47.022615  5831 caffe.cpp:190] GPU 3: GeForce GTX TITAN X
+I0803 17:00:47.592141  5831 solver.cpp:48] Initializing solver from parameters: 
+test_iter: 100
+test_interval: 1000
+base_lr: 0.0001
+display: 20
+max_iter: 400000
+lr_policy: "poly"
+power: 0.5
+momentum: 0.9
+weight_decay: 0.0002
+snapshot: 10000
+snapshot_prefix: "model/facial_point"
+solver_mode: GPU
+device_id: 3
+net: "train_val.prototxt"
+clip_gradients: 10
+I0803 17:00:47.592335  5831 solver.cpp:91] Creating training net from net file: train_val.prototxt
+I0803 17:00:47.593500  5831 net.cpp:313] The NetState phase (0) differed from the phase (1) specified by a rule in layer facial_point
+I0803 17:00:47.593843  5831 net.cpp:49] Initializing net from parameters: 
+name: "facial_point_net"
+state {
+  phase: TRAIN
+}
+layer {
+  name: "facial_point"
+  type: "NewFacialPointData"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  new_facial_point_data_param {
+    source: "train_aug_list.txt"
+    batch_size: 32
+    shuffle: true
+    new_height: 224
+    new_width: 224
+    is_color: true
+    point_num: 68
+    ext_scale: 1.2
+    xy_mean: 0.03
+    xy_std: 0.03
+    wh_mean: 1
+    wh_std: 0.03
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 7
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "conv1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0005
+    beta: 0.75
+    k: 2
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "norm1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "pool3"
+  top: "fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "fc6"
+}
+layer {
+  name: "drop6"
+  type: "Dropout"
+  bottom: "fc6"
+  top: "fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "fc7"
+}
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "fc7"
+  top: "fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "68point"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "68point"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 136
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "EuclideanLoss"
+  bottom: "68point"
+  bottom: "label"
+  top: "loss"
+}
+layer {
+  name: "loc_reg_affine"
+  type: "InnerProduct"
+  bottom: "68point"
+  top: "theta"
+  inner_product_param {
+    num_output: 6
+    weight_filler {
+      type: "constant"
+      value: 0
+    }
+    bias_filler {
+      type: "file"
+      file: "bias_init.txt"
+    }
+  }
+}
+layer {
+  name: "theta_loss"
+  type: "LocLoss"
+  bottom: "theta"
+  top: "theta_loss"
+  loss_weight: 1
+  loc_loss_param {
+    threshold: 1
+  }
+}
+layer {
+  name: "st_pts"
+  type: "PointTransformer"
+  bottom: "label"
+  bottom: "theta"
+  top: "local/label"
+  propagate_down: false
+  propagate_down: false
+  pt_param {
+    in_width: 224
+    in_height: 224
+    out_width: 224
+    out_height: 224
+    transform_type: CROP
+  }
+}
+layer {
+  name: "st_layer"
+  type: "SpatialTransformer"
+  bottom: "data"
+  bottom: "theta"
+  top: "local/data"
+  st_param {
+    output_H: 224
+    output_W: 224
+    to_compute_dU: false
+  }
+}
+layer {
+  name: "local_conv1"
+  type: "Convolution"
+  bottom: "local/data"
+  top: "local/conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 7
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu1"
+  type: "ReLU"
+  bottom: "local/conv1"
+  top: "local/conv1"
+}
+layer {
+  name: "local_norm1"
+  type: "LRN"
+  bottom: "local/conv1"
+  top: "local/norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0005
+    beta: 0.75
+    k: 2
+  }
+}
+layer {
+  name: "local_pool1"
+  type: "Pooling"
+  bottom: "local/norm1"
+  top: "local/pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "local_conv2"
+  type: "Convolution"
+  bottom: "local/pool1"
+  top: "local/conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu2"
+  type: "ReLU"
+  bottom: "local/conv2"
+  top: "local/conv2"
+}
+layer {
+  name: "local_pool2"
+  type: "Pooling"
+  bottom: "local/conv2"
+  top: "local/pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "local_conv3"
+  type: "Convolution"
+  bottom: "local/pool2"
+  top: "local/conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu3"
+  type: "ReLU"
+  bottom: "local/conv3"
+  top: "local/conv3"
+}
+layer {
+  name: "local_conv4"
+  type: "Convolution"
+  bottom: "local/conv3"
+  top: "local/conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu4"
+  type: "ReLU"
+  bottom: "local/conv4"
+  top: "local/conv4"
+}
+layer {
+  name: "local_conv5"
+  type: "Convolution"
+  bottom: "local/conv4"
+  top: "local/conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu5"
+  type: "ReLU"
+  bottom: "local/conv5"
+  top: "local/conv5"
+}
+layer {
+  name: "local_pool3"
+  type: "Pooling"
+  bottom: "local/conv5"
+  top: "local/pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "local_fc6"
+  type: "InnerProduct"
+  bottom: "local/pool3"
+  top: "local/fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "local_relu6"
+  type: "ReLU"
+  bottom: "local/fc6"
+  top: "local/fc6"
+}
+layer {
+  name: "local_drop6"
+  type: "Dropout"
+  bottom: "local/fc6"
+  top: "local/fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "local_fc7"
+  type: "InnerProduct"
+  bottom: "local/fc6"
+  top: "local/fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "local_relu7"
+  type: "ReLU"
+  bottom: "local/fc7"
+  top: "local/fc7"
+}
+layer {
+  name: "local_drop7"
+  type: "Dropout"
+  bottom: "local/fc7"
+  top: "local/fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "local_68point"
+  type: "InnerProduct"
+  bottom: "local/fc7"
+  top: "local/68point"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 136
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "local_loss"
+  type: "EuclideanLoss"
+  bottom: "local/68point"
+  bottom: "local/label"
+  top: "local/loss"
+}
+I0803 17:00:47.596048  5831 layer_factory.hpp:77] Creating layer facial_point
+I0803 17:00:47.596096  5831 net.cpp:91] Creating Layer facial_point
+I0803 17:00:47.596108  5831 net.cpp:399] facial_point -> data
+I0803 17:00:47.596135  5831 net.cpp:399] facial_point -> label
+I0803 17:00:47.596153  5831 new_facial_point_data_layer.cpp:187] Opening file train_aug_list.txt
+I0803 17:00:47.601678  5831 new_facial_point_data_layer.cpp:197] Shuffling data
+I0803 17:00:47.603001  5831 new_facial_point_data_layer.cpp:203] A total of 12592 images.
+I0803 17:00:47.648943  5831 new_facial_point_data_layer.cpp:263] output data size: 32,3,224,224
+I0803 17:00:47.690528  5831 net.cpp:141] Setting up facial_point
+I0803 17:00:47.690587  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:47.690605  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:47.690614  5831 net.cpp:156] Memory required for data: 19284992
+I0803 17:00:47.690628  5831 layer_factory.hpp:77] Creating layer data_facial_point_0_split
+I0803 17:00:47.690654  5831 net.cpp:91] Creating Layer data_facial_point_0_split
+I0803 17:00:47.690666  5831 net.cpp:425] data_facial_point_0_split <- data
+I0803 17:00:47.690685  5831 net.cpp:399] data_facial_point_0_split -> data_facial_point_0_split_0
+I0803 17:00:47.690702  5831 net.cpp:399] data_facial_point_0_split -> data_facial_point_0_split_1
+I0803 17:00:47.690791  5831 net.cpp:141] Setting up data_facial_point_0_split
+I0803 17:00:47.690830  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:47.690840  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:47.690848  5831 net.cpp:156] Memory required for data: 57820160
+I0803 17:00:47.690857  5831 layer_factory.hpp:77] Creating layer label_facial_point_1_split
+I0803 17:00:47.690870  5831 net.cpp:91] Creating Layer label_facial_point_1_split
+I0803 17:00:47.690878  5831 net.cpp:425] label_facial_point_1_split <- label
+I0803 17:00:47.690889  5831 net.cpp:399] label_facial_point_1_split -> label_facial_point_1_split_0
+I0803 17:00:47.690901  5831 net.cpp:399] label_facial_point_1_split -> label_facial_point_1_split_1
+I0803 17:00:47.690944  5831 net.cpp:141] Setting up label_facial_point_1_split
+I0803 17:00:47.690966  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:47.690975  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:47.690984  5831 net.cpp:156] Memory required for data: 57854976
+I0803 17:00:47.690994  5831 layer_factory.hpp:77] Creating layer conv1
+I0803 17:00:47.691015  5831 net.cpp:91] Creating Layer conv1
+I0803 17:00:47.691023  5831 net.cpp:425] conv1 <- data_facial_point_0_split_0
+I0803 17:00:47.691035  5831 net.cpp:399] conv1 -> conv1
+I0803 17:00:47.691409  5831 net.cpp:141] Setting up conv1
+I0803 17:00:47.691426  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:47.691436  5831 net.cpp:156] Memory required for data: 203848704
+I0803 17:00:47.691454  5831 layer_factory.hpp:77] Creating layer relu1
+I0803 17:00:47.691468  5831 net.cpp:91] Creating Layer relu1
+I0803 17:00:47.691478  5831 net.cpp:425] relu1 <- conv1
+I0803 17:00:47.691488  5831 net.cpp:386] relu1 -> conv1 (in-place)
+I0803 17:00:47.691501  5831 net.cpp:141] Setting up relu1
+I0803 17:00:47.691511  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:47.691519  5831 net.cpp:156] Memory required for data: 349842432
+I0803 17:00:47.691527  5831 layer_factory.hpp:77] Creating layer norm1
+I0803 17:00:47.691540  5831 net.cpp:91] Creating Layer norm1
+I0803 17:00:47.691547  5831 net.cpp:425] norm1 <- conv1
+I0803 17:00:47.691556  5831 net.cpp:399] norm1 -> norm1
+I0803 17:00:47.691601  5831 net.cpp:141] Setting up norm1
+I0803 17:00:47.691622  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:47.691628  5831 net.cpp:156] Memory required for data: 495836160
+I0803 17:00:47.691637  5831 layer_factory.hpp:77] Creating layer pool1
+I0803 17:00:47.691648  5831 net.cpp:91] Creating Layer pool1
+I0803 17:00:47.691658  5831 net.cpp:425] pool1 <- norm1
+I0803 17:00:47.691668  5831 net.cpp:399] pool1 -> pool1
+I0803 17:00:47.691721  5831 net.cpp:141] Setting up pool1
+I0803 17:00:47.691735  5831 net.cpp:148] Top shape: 32 96 37 37 (4205568)
+I0803 17:00:47.691743  5831 net.cpp:156] Memory required for data: 512658432
+I0803 17:00:47.691751  5831 layer_factory.hpp:77] Creating layer conv2
+I0803 17:00:47.691764  5831 net.cpp:91] Creating Layer conv2
+I0803 17:00:47.691773  5831 net.cpp:425] conv2 <- pool1
+I0803 17:00:47.691783  5831 net.cpp:399] conv2 -> conv2
+I0803 17:00:47.698521  5831 net.cpp:141] Setting up conv2
+I0803 17:00:47.698546  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:47.698555  5831 net.cpp:156] Memory required for data: 548342784
+I0803 17:00:47.698570  5831 layer_factory.hpp:77] Creating layer relu2
+I0803 17:00:47.698582  5831 net.cpp:91] Creating Layer relu2
+I0803 17:00:47.698590  5831 net.cpp:425] relu2 <- conv2
+I0803 17:00:47.698602  5831 net.cpp:386] relu2 -> conv2 (in-place)
+I0803 17:00:47.698614  5831 net.cpp:141] Setting up relu2
+I0803 17:00:47.698623  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:47.698631  5831 net.cpp:156] Memory required for data: 584027136
+I0803 17:00:47.698637  5831 layer_factory.hpp:77] Creating layer pool2
+I0803 17:00:47.698647  5831 net.cpp:91] Creating Layer pool2
+I0803 17:00:47.698654  5831 net.cpp:425] pool2 <- conv2
+I0803 17:00:47.698664  5831 net.cpp:399] pool2 -> pool2
+I0803 17:00:47.698706  5831 net.cpp:141] Setting up pool2
+I0803 17:00:47.698734  5831 net.cpp:148] Top shape: 32 256 17 17 (2367488)
+I0803 17:00:47.698741  5831 net.cpp:156] Memory required for data: 593497088
+I0803 17:00:47.698750  5831 layer_factory.hpp:77] Creating layer conv3
+I0803 17:00:47.698763  5831 net.cpp:91] Creating Layer conv3
+I0803 17:00:47.698771  5831 net.cpp:425] conv3 <- pool2
+I0803 17:00:47.698782  5831 net.cpp:399] conv3 -> conv3
+I0803 17:00:47.715545  5831 net.cpp:141] Setting up conv3
+I0803 17:00:47.715572  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:47.715582  5831 net.cpp:156] Memory required for data: 612436992
+I0803 17:00:47.715597  5831 layer_factory.hpp:77] Creating layer relu3
+I0803 17:00:47.715610  5831 net.cpp:91] Creating Layer relu3
+I0803 17:00:47.715620  5831 net.cpp:425] relu3 <- conv3
+I0803 17:00:47.715631  5831 net.cpp:386] relu3 -> conv3 (in-place)
+I0803 17:00:47.715642  5831 net.cpp:141] Setting up relu3
+I0803 17:00:47.715653  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:47.715661  5831 net.cpp:156] Memory required for data: 631376896
+I0803 17:00:47.715667  5831 layer_factory.hpp:77] Creating layer conv4
+I0803 17:00:47.715682  5831 net.cpp:91] Creating Layer conv4
+I0803 17:00:47.715689  5831 net.cpp:425] conv4 <- conv3
+I0803 17:00:47.715703  5831 net.cpp:399] conv4 -> conv4
+I0803 17:00:47.738157  5831 net.cpp:141] Setting up conv4
+I0803 17:00:47.738194  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:47.738206  5831 net.cpp:156] Memory required for data: 650316800
+I0803 17:00:47.738220  5831 layer_factory.hpp:77] Creating layer relu4
+I0803 17:00:47.738234  5831 net.cpp:91] Creating Layer relu4
+I0803 17:00:47.738243  5831 net.cpp:425] relu4 <- conv4
+I0803 17:00:47.738255  5831 net.cpp:386] relu4 -> conv4 (in-place)
+I0803 17:00:47.738268  5831 net.cpp:141] Setting up relu4
+I0803 17:00:47.738277  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:47.738286  5831 net.cpp:156] Memory required for data: 669256704
+I0803 17:00:47.738294  5831 layer_factory.hpp:77] Creating layer conv5
+I0803 17:00:47.738312  5831 net.cpp:91] Creating Layer conv5
+I0803 17:00:47.738320  5831 net.cpp:425] conv5 <- conv4
+I0803 17:00:47.738332  5831 net.cpp:399] conv5 -> conv5
+I0803 17:00:47.760799  5831 net.cpp:141] Setting up conv5
+I0803 17:00:47.760836  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:47.760845  5831 net.cpp:156] Memory required for data: 688196608
+I0803 17:00:47.760867  5831 layer_factory.hpp:77] Creating layer relu5
+I0803 17:00:47.760885  5831 net.cpp:91] Creating Layer relu5
+I0803 17:00:47.760895  5831 net.cpp:425] relu5 <- conv5
+I0803 17:00:47.760905  5831 net.cpp:386] relu5 -> conv5 (in-place)
+I0803 17:00:47.760917  5831 net.cpp:141] Setting up relu5
+I0803 17:00:47.760926  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:47.760934  5831 net.cpp:156] Memory required for data: 707136512
+I0803 17:00:47.760942  5831 layer_factory.hpp:77] Creating layer pool3
+I0803 17:00:47.760956  5831 net.cpp:91] Creating Layer pool3
+I0803 17:00:47.760963  5831 net.cpp:425] pool3 <- conv5
+I0803 17:00:47.760973  5831 net.cpp:399] pool3 -> pool3
+I0803 17:00:47.761013  5831 net.cpp:141] Setting up pool3
+I0803 17:00:47.761025  5831 net.cpp:148] Top shape: 32 512 6 6 (589824)
+I0803 17:00:47.761032  5831 net.cpp:156] Memory required for data: 709495808
+I0803 17:00:47.761039  5831 layer_factory.hpp:77] Creating layer fc6
+I0803 17:00:47.761052  5831 net.cpp:91] Creating Layer fc6
+I0803 17:00:47.761059  5831 net.cpp:425] fc6 <- pool3
+I0803 17:00:47.761070  5831 net.cpp:399] fc6 -> fc6
+I0803 17:00:48.533790  5831 net.cpp:141] Setting up fc6
+I0803 17:00:48.533892  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:48.533905  5831 net.cpp:156] Memory required for data: 710020096
+I0803 17:00:48.533980  5831 layer_factory.hpp:77] Creating layer relu6
+I0803 17:00:48.534024  5831 net.cpp:91] Creating Layer relu6
+I0803 17:00:48.534060  5831 net.cpp:425] relu6 <- fc6
+I0803 17:00:48.534080  5831 net.cpp:386] relu6 -> fc6 (in-place)
+I0803 17:00:48.534097  5831 net.cpp:141] Setting up relu6
+I0803 17:00:48.534148  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:48.534158  5831 net.cpp:156] Memory required for data: 710544384
+I0803 17:00:48.534167  5831 layer_factory.hpp:77] Creating layer drop6
+I0803 17:00:48.534206  5831 net.cpp:91] Creating Layer drop6
+I0803 17:00:48.534217  5831 net.cpp:425] drop6 <- fc6
+I0803 17:00:48.534227  5831 net.cpp:386] drop6 -> fc6 (in-place)
+I0803 17:00:48.534359  5831 net.cpp:141] Setting up drop6
+I0803 17:00:48.534375  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:48.534384  5831 net.cpp:156] Memory required for data: 711068672
+I0803 17:00:48.534392  5831 layer_factory.hpp:77] Creating layer fc7
+I0803 17:00:48.534415  5831 net.cpp:91] Creating Layer fc7
+I0803 17:00:48.534432  5831 net.cpp:425] fc7 <- fc6
+I0803 17:00:48.534448  5831 net.cpp:399] fc7 -> fc7
+I0803 17:00:48.697939  5831 net.cpp:141] Setting up fc7
+I0803 17:00:48.697991  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:48.698001  5831 net.cpp:156] Memory required for data: 711592960
+I0803 17:00:48.698017  5831 layer_factory.hpp:77] Creating layer relu7
+I0803 17:00:48.698035  5831 net.cpp:91] Creating Layer relu7
+I0803 17:00:48.698045  5831 net.cpp:425] relu7 <- fc7
+I0803 17:00:48.698062  5831 net.cpp:386] relu7 -> fc7 (in-place)
+I0803 17:00:48.698078  5831 net.cpp:141] Setting up relu7
+I0803 17:00:48.698088  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:48.698096  5831 net.cpp:156] Memory required for data: 712117248
+I0803 17:00:48.698103  5831 layer_factory.hpp:77] Creating layer drop7
+I0803 17:00:48.698120  5831 net.cpp:91] Creating Layer drop7
+I0803 17:00:48.698129  5831 net.cpp:425] drop7 <- fc7
+I0803 17:00:48.698138  5831 net.cpp:386] drop7 -> fc7 (in-place)
+I0803 17:00:48.698176  5831 net.cpp:141] Setting up drop7
+I0803 17:00:48.698196  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:48.698204  5831 net.cpp:156] Memory required for data: 712641536
+I0803 17:00:48.698211  5831 layer_factory.hpp:77] Creating layer 68point
+I0803 17:00:48.698235  5831 net.cpp:91] Creating Layer 68point
+I0803 17:00:48.698242  5831 net.cpp:425] 68point <- fc7
+I0803 17:00:48.698257  5831 net.cpp:399] 68point -> 68point
+I0803 17:00:48.703651  5831 net.cpp:141] Setting up 68point
+I0803 17:00:48.703686  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:48.703696  5831 net.cpp:156] Memory required for data: 712658944
+I0803 17:00:48.703707  5831 layer_factory.hpp:77] Creating layer 68point_68point_0_split
+I0803 17:00:48.703719  5831 net.cpp:91] Creating Layer 68point_68point_0_split
+I0803 17:00:48.703728  5831 net.cpp:425] 68point_68point_0_split <- 68point
+I0803 17:00:48.703737  5831 net.cpp:399] 68point_68point_0_split -> 68point_68point_0_split_0
+I0803 17:00:48.703750  5831 net.cpp:399] 68point_68point_0_split -> 68point_68point_0_split_1
+I0803 17:00:48.703805  5831 net.cpp:141] Setting up 68point_68point_0_split
+I0803 17:00:48.703819  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:48.703827  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:48.703835  5831 net.cpp:156] Memory required for data: 712693760
+I0803 17:00:48.703842  5831 layer_factory.hpp:77] Creating layer loss
+I0803 17:00:48.703866  5831 net.cpp:91] Creating Layer loss
+I0803 17:00:48.703874  5831 net.cpp:425] loss <- 68point_68point_0_split_0
+I0803 17:00:48.703883  5831 net.cpp:425] loss <- label_facial_point_1_split_0
+I0803 17:00:48.703901  5831 net.cpp:399] loss -> loss
+I0803 17:00:48.703950  5831 net.cpp:141] Setting up loss
+I0803 17:00:48.703961  5831 net.cpp:148] Top shape: (1)
+I0803 17:00:48.703969  5831 net.cpp:151]     with loss weight 1
+I0803 17:00:48.704053  5831 net.cpp:156] Memory required for data: 712693764
+I0803 17:00:48.704062  5831 layer_factory.hpp:77] Creating layer loc_reg_affine
+I0803 17:00:48.704089  5831 net.cpp:91] Creating Layer loc_reg_affine
+I0803 17:00:48.704098  5831 net.cpp:425] loc_reg_affine <- 68point_68point_0_split_1
+I0803 17:00:48.704109  5831 net.cpp:399] loc_reg_affine -> theta
+I0803 17:00:48.704314  5831 net.cpp:141] Setting up loc_reg_affine
+I0803 17:00:48.704331  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:48.704365  5831 net.cpp:156] Memory required for data: 712694532
+I0803 17:00:48.704396  5831 layer_factory.hpp:77] Creating layer theta_loc_reg_affine_0_split
+I0803 17:00:48.704408  5831 net.cpp:91] Creating Layer theta_loc_reg_affine_0_split
+I0803 17:00:48.704416  5831 net.cpp:425] theta_loc_reg_affine_0_split <- theta
+I0803 17:00:48.704427  5831 net.cpp:399] theta_loc_reg_affine_0_split -> theta_loc_reg_affine_0_split_0
+I0803 17:00:48.704438  5831 net.cpp:399] theta_loc_reg_affine_0_split -> theta_loc_reg_affine_0_split_1
+I0803 17:00:48.704450  5831 net.cpp:399] theta_loc_reg_affine_0_split -> theta_loc_reg_affine_0_split_2
+I0803 17:00:48.704506  5831 net.cpp:141] Setting up theta_loc_reg_affine_0_split
+I0803 17:00:48.704519  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:48.704527  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:48.704535  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:48.704541  5831 net.cpp:156] Memory required for data: 712696836
+I0803 17:00:48.704550  5831 layer_factory.hpp:77] Creating layer theta_loss
+I0803 17:00:48.704560  5831 net.cpp:91] Creating Layer theta_loss
+I0803 17:00:48.704567  5831 net.cpp:425] theta_loss <- theta_loc_reg_affine_0_split_0
+I0803 17:00:48.704581  5831 net.cpp:399] theta_loss -> theta_loss
+I0803 17:00:48.704639  5831 net.cpp:141] Setting up theta_loss
+I0803 17:00:48.704650  5831 net.cpp:148] Top shape: (1)
+I0803 17:00:48.704658  5831 net.cpp:151]     with loss weight 1
+I0803 17:00:48.704665  5831 net.cpp:156] Memory required for data: 712696840
+I0803 17:00:48.704673  5831 layer_factory.hpp:77] Creating layer st_pts
+I0803 17:00:48.704694  5831 net.cpp:91] Creating Layer st_pts
+I0803 17:00:48.704702  5831 net.cpp:425] st_pts <- label_facial_point_1_split_1
+I0803 17:00:48.704711  5831 net.cpp:425] st_pts <- theta_loc_reg_affine_0_split_1
+I0803 17:00:48.704721  5831 net.cpp:399] st_pts -> local/label
+I0803 17:00:48.704751  5831 net.cpp:141] Setting up st_pts
+I0803 17:00:48.704762  5831 net.cpp:148] Top shape: 32 136 1 1 (4352)
+I0803 17:00:48.704769  5831 net.cpp:156] Memory required for data: 712714248
+I0803 17:00:48.704777  5831 layer_factory.hpp:77] Creating layer st_layer
+I0803 17:00:48.704798  5831 net.cpp:91] Creating Layer st_layer
+I0803 17:00:48.704807  5831 net.cpp:425] st_layer <- data_facial_point_0_split_1
+I0803 17:00:48.704815  5831 net.cpp:425] st_layer <- theta_loc_reg_affine_0_split_2
+I0803 17:00:48.704824  5831 net.cpp:399] st_layer -> local/data
+I0803 17:00:48.706955  5831 net.cpp:141] Setting up st_layer
+I0803 17:00:48.706972  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:48.706979  5831 net.cpp:156] Memory required for data: 731981832
+I0803 17:00:48.706993  5831 layer_factory.hpp:77] Creating layer local_conv1
+I0803 17:00:48.707015  5831 net.cpp:91] Creating Layer local_conv1
+I0803 17:00:48.707026  5831 net.cpp:425] local_conv1 <- local/data
+I0803 17:00:48.707036  5831 net.cpp:399] local_conv1 -> local/conv1
+I0803 17:00:48.707442  5831 net.cpp:141] Setting up local_conv1
+I0803 17:00:48.707458  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:48.707465  5831 net.cpp:156] Memory required for data: 877975560
+I0803 17:00:48.707476  5831 layer_factory.hpp:77] Creating layer local_relu1
+I0803 17:00:48.707507  5831 net.cpp:91] Creating Layer local_relu1
+I0803 17:00:48.707517  5831 net.cpp:425] local_relu1 <- local/conv1
+I0803 17:00:48.707526  5831 net.cpp:386] local_relu1 -> local/conv1 (in-place)
+I0803 17:00:48.707537  5831 net.cpp:141] Setting up local_relu1
+I0803 17:00:48.707546  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:48.707553  5831 net.cpp:156] Memory required for data: 1023969288
+I0803 17:00:48.707561  5831 layer_factory.hpp:77] Creating layer local_norm1
+I0803 17:00:48.707581  5831 net.cpp:91] Creating Layer local_norm1
+I0803 17:00:48.707589  5831 net.cpp:425] local_norm1 <- local/conv1
+I0803 17:00:48.707598  5831 net.cpp:399] local_norm1 -> local/norm1
+I0803 17:00:48.707649  5831 net.cpp:141] Setting up local_norm1
+I0803 17:00:48.707677  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:48.707685  5831 net.cpp:156] Memory required for data: 1169963016
+I0803 17:00:48.707693  5831 layer_factory.hpp:77] Creating layer local_pool1
+I0803 17:00:48.707710  5831 net.cpp:91] Creating Layer local_pool1
+I0803 17:00:48.707718  5831 net.cpp:425] local_pool1 <- local/norm1
+I0803 17:00:48.707734  5831 net.cpp:399] local_pool1 -> local/pool1
+I0803 17:00:48.707780  5831 net.cpp:141] Setting up local_pool1
+I0803 17:00:48.707792  5831 net.cpp:148] Top shape: 32 96 37 37 (4205568)
+I0803 17:00:48.707805  5831 net.cpp:156] Memory required for data: 1186785288
+I0803 17:00:48.707813  5831 layer_factory.hpp:77] Creating layer local_conv2
+I0803 17:00:48.707824  5831 net.cpp:91] Creating Layer local_conv2
+I0803 17:00:48.707833  5831 net.cpp:425] local_conv2 <- local/pool1
+I0803 17:00:48.707847  5831 net.cpp:399] local_conv2 -> local/conv2
+I0803 17:00:48.714154  5831 net.cpp:141] Setting up local_conv2
+I0803 17:00:48.714179  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:48.714190  5831 net.cpp:156] Memory required for data: 1222469640
+I0803 17:00:48.714201  5831 layer_factory.hpp:77] Creating layer local_relu2
+I0803 17:00:48.714218  5831 net.cpp:91] Creating Layer local_relu2
+I0803 17:00:48.714228  5831 net.cpp:425] local_relu2 <- local/conv2
+I0803 17:00:48.714244  5831 net.cpp:386] local_relu2 -> local/conv2 (in-place)
+I0803 17:00:48.714257  5831 net.cpp:141] Setting up local_relu2
+I0803 17:00:48.714267  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:48.714275  5831 net.cpp:156] Memory required for data: 1258153992
+I0803 17:00:48.714283  5831 layer_factory.hpp:77] Creating layer local_pool2
+I0803 17:00:48.714300  5831 net.cpp:91] Creating Layer local_pool2
+I0803 17:00:48.714309  5831 net.cpp:425] local_pool2 <- local/conv2
+I0803 17:00:48.714319  5831 net.cpp:399] local_pool2 -> local/pool2
+I0803 17:00:48.714380  5831 net.cpp:141] Setting up local_pool2
+I0803 17:00:48.714395  5831 net.cpp:148] Top shape: 32 256 17 17 (2367488)
+I0803 17:00:48.714404  5831 net.cpp:156] Memory required for data: 1267623944
+I0803 17:00:48.714417  5831 layer_factory.hpp:77] Creating layer local_conv3
+I0803 17:00:48.714437  5831 net.cpp:91] Creating Layer local_conv3
+I0803 17:00:48.714447  5831 net.cpp:425] local_conv3 <- local/pool2
+I0803 17:00:48.714465  5831 net.cpp:399] local_conv3 -> local/conv3
+I0803 17:00:48.726135  5831 net.cpp:141] Setting up local_conv3
+I0803 17:00:48.726164  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:48.726173  5831 net.cpp:156] Memory required for data: 1286563848
+I0803 17:00:48.726193  5831 layer_factory.hpp:77] Creating layer local_relu3
+I0803 17:00:48.726207  5831 net.cpp:91] Creating Layer local_relu3
+I0803 17:00:48.726215  5831 net.cpp:425] local_relu3 <- local/conv3
+I0803 17:00:48.726225  5831 net.cpp:386] local_relu3 -> local/conv3 (in-place)
+I0803 17:00:48.726239  5831 net.cpp:141] Setting up local_relu3
+I0803 17:00:48.726248  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:48.726255  5831 net.cpp:156] Memory required for data: 1305503752
+I0803 17:00:48.726263  5831 layer_factory.hpp:77] Creating layer local_conv4
+I0803 17:00:48.726289  5831 net.cpp:91] Creating Layer local_conv4
+I0803 17:00:48.726300  5831 net.cpp:425] local_conv4 <- local/conv3
+I0803 17:00:48.726315  5831 net.cpp:399] local_conv4 -> local/conv4
+I0803 17:00:48.749408  5831 net.cpp:141] Setting up local_conv4
+I0803 17:00:48.749449  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:48.749457  5831 net.cpp:156] Memory required for data: 1324443656
+I0803 17:00:48.749471  5831 layer_factory.hpp:77] Creating layer local_relu4
+I0803 17:00:48.749505  5831 net.cpp:91] Creating Layer local_relu4
+I0803 17:00:48.749517  5831 net.cpp:425] local_relu4 <- local/conv4
+I0803 17:00:48.749528  5831 net.cpp:386] local_relu4 -> local/conv4 (in-place)
+I0803 17:00:48.749546  5831 net.cpp:141] Setting up local_relu4
+I0803 17:00:48.749554  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:48.749562  5831 net.cpp:156] Memory required for data: 1343383560
+I0803 17:00:48.749593  5831 layer_factory.hpp:77] Creating layer local_conv5
+I0803 17:00:48.749627  5831 net.cpp:91] Creating Layer local_conv5
+I0803 17:00:48.749696  5831 net.cpp:425] local_conv5 <- local/conv4
+I0803 17:00:48.749754  5831 net.cpp:399] local_conv5 -> local/conv5
+I0803 17:00:48.787758  5831 net.cpp:141] Setting up local_conv5
+I0803 17:00:48.787822  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:48.787838  5831 net.cpp:156] Memory required for data: 1362323464
+I0803 17:00:48.787859  5831 layer_factory.hpp:77] Creating layer local_relu5
+I0803 17:00:48.787883  5831 net.cpp:91] Creating Layer local_relu5
+I0803 17:00:48.787899  5831 net.cpp:425] local_relu5 <- local/conv5
+I0803 17:00:48.787917  5831 net.cpp:386] local_relu5 -> local/conv5 (in-place)
+I0803 17:00:48.787940  5831 net.cpp:141] Setting up local_relu5
+I0803 17:00:48.787955  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:48.787966  5831 net.cpp:156] Memory required for data: 1381263368
+I0803 17:00:48.787977  5831 layer_factory.hpp:77] Creating layer local_pool3
+I0803 17:00:48.787995  5831 net.cpp:91] Creating Layer local_pool3
+I0803 17:00:48.788008  5831 net.cpp:425] local_pool3 <- local/conv5
+I0803 17:00:48.788024  5831 net.cpp:399] local_pool3 -> local/pool3
+I0803 17:00:48.788095  5831 net.cpp:141] Setting up local_pool3
+I0803 17:00:48.788118  5831 net.cpp:148] Top shape: 32 512 6 6 (589824)
+I0803 17:00:48.788130  5831 net.cpp:156] Memory required for data: 1383622664
+I0803 17:00:48.788143  5831 layer_factory.hpp:77] Creating layer local_fc6
+I0803 17:00:48.788166  5831 net.cpp:91] Creating Layer local_fc6
+I0803 17:00:48.788178  5831 net.cpp:425] local_fc6 <- local/pool3
+I0803 17:00:48.788197  5831 net.cpp:399] local_fc6 -> local/fc6
+I0803 17:00:49.570732  5831 net.cpp:141] Setting up local_fc6
+I0803 17:00:49.570785  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:49.570796  5831 net.cpp:156] Memory required for data: 1384146952
+I0803 17:00:49.570812  5831 layer_factory.hpp:77] Creating layer local_relu6
+I0803 17:00:49.570842  5831 net.cpp:91] Creating Layer local_relu6
+I0803 17:00:49.570853  5831 net.cpp:425] local_relu6 <- local/fc6
+I0803 17:00:49.570865  5831 net.cpp:386] local_relu6 -> local/fc6 (in-place)
+I0803 17:00:49.570883  5831 net.cpp:141] Setting up local_relu6
+I0803 17:00:49.570891  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:49.570901  5831 net.cpp:156] Memory required for data: 1384671240
+I0803 17:00:49.570909  5831 layer_factory.hpp:77] Creating layer local_drop6
+I0803 17:00:49.570930  5831 net.cpp:91] Creating Layer local_drop6
+I0803 17:00:49.570940  5831 net.cpp:425] local_drop6 <- local/fc6
+I0803 17:00:49.570950  5831 net.cpp:386] local_drop6 -> local/fc6 (in-place)
+I0803 17:00:49.570983  5831 net.cpp:141] Setting up local_drop6
+I0803 17:00:49.571008  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:49.571015  5831 net.cpp:156] Memory required for data: 1385195528
+I0803 17:00:49.571023  5831 layer_factory.hpp:77] Creating layer local_fc7
+I0803 17:00:49.571045  5831 net.cpp:91] Creating Layer local_fc7
+I0803 17:00:49.571056  5831 net.cpp:425] local_fc7 <- local/fc6
+I0803 17:00:49.571075  5831 net.cpp:399] local_fc7 -> local/fc7
+I0803 17:00:49.733683  5831 net.cpp:141] Setting up local_fc7
+I0803 17:00:49.733727  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:49.733737  5831 net.cpp:156] Memory required for data: 1385719816
+I0803 17:00:49.733753  5831 layer_factory.hpp:77] Creating layer local_relu7
+I0803 17:00:49.733777  5831 net.cpp:91] Creating Layer local_relu7
+I0803 17:00:49.733796  5831 net.cpp:425] local_relu7 <- local/fc7
+I0803 17:00:49.733808  5831 net.cpp:386] local_relu7 -> local/fc7 (in-place)
+I0803 17:00:49.733826  5831 net.cpp:141] Setting up local_relu7
+I0803 17:00:49.733836  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:49.733844  5831 net.cpp:156] Memory required for data: 1386244104
+I0803 17:00:49.733853  5831 layer_factory.hpp:77] Creating layer local_drop7
+I0803 17:00:49.733892  5831 net.cpp:91] Creating Layer local_drop7
+I0803 17:00:49.733901  5831 net.cpp:425] local_drop7 <- local/fc7
+I0803 17:00:49.733911  5831 net.cpp:386] local_drop7 -> local/fc7 (in-place)
+I0803 17:00:49.733955  5831 net.cpp:141] Setting up local_drop7
+I0803 17:00:49.733975  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:49.733984  5831 net.cpp:156] Memory required for data: 1386768392
+I0803 17:00:49.733992  5831 layer_factory.hpp:77] Creating layer local_68point
+I0803 17:00:49.734019  5831 net.cpp:91] Creating Layer local_68point
+I0803 17:00:49.734028  5831 net.cpp:425] local_68point <- local/fc7
+I0803 17:00:49.734040  5831 net.cpp:399] local_68point -> local/68point
+I0803 17:00:49.739411  5831 net.cpp:141] Setting up local_68point
+I0803 17:00:49.739435  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:49.739444  5831 net.cpp:156] Memory required for data: 1386785800
+I0803 17:00:49.739473  5831 layer_factory.hpp:77] Creating layer local_loss
+I0803 17:00:49.739487  5831 net.cpp:91] Creating Layer local_loss
+I0803 17:00:49.739496  5831 net.cpp:425] local_loss <- local/68point
+I0803 17:00:49.739506  5831 net.cpp:425] local_loss <- local/label
+I0803 17:00:49.739516  5831 net.cpp:399] local_loss -> local/loss
+I0803 17:00:49.739559  5831 net.cpp:141] Setting up local_loss
+I0803 17:00:49.739570  5831 net.cpp:148] Top shape: (1)
+I0803 17:00:49.739578  5831 net.cpp:151]     with loss weight 1
+I0803 17:00:49.739593  5831 net.cpp:156] Memory required for data: 1386785804
+I0803 17:00:49.739601  5831 net.cpp:217] local_loss needs backward computation.
+I0803 17:00:49.739609  5831 net.cpp:217] local_68point needs backward computation.
+I0803 17:00:49.739616  5831 net.cpp:217] local_drop7 needs backward computation.
+I0803 17:00:49.739624  5831 net.cpp:217] local_relu7 needs backward computation.
+I0803 17:00:49.739630  5831 net.cpp:217] local_fc7 needs backward computation.
+I0803 17:00:49.739637  5831 net.cpp:217] local_drop6 needs backward computation.
+I0803 17:00:49.739645  5831 net.cpp:217] local_relu6 needs backward computation.
+I0803 17:00:49.739651  5831 net.cpp:217] local_fc6 needs backward computation.
+I0803 17:00:49.739658  5831 net.cpp:217] local_pool3 needs backward computation.
+I0803 17:00:49.739666  5831 net.cpp:217] local_relu5 needs backward computation.
+I0803 17:00:49.739673  5831 net.cpp:217] local_conv5 needs backward computation.
+I0803 17:00:49.739681  5831 net.cpp:217] local_relu4 needs backward computation.
+I0803 17:00:49.739687  5831 net.cpp:217] local_conv4 needs backward computation.
+I0803 17:00:49.739696  5831 net.cpp:217] local_relu3 needs backward computation.
+I0803 17:00:49.739702  5831 net.cpp:217] local_conv3 needs backward computation.
+I0803 17:00:49.739709  5831 net.cpp:217] local_pool2 needs backward computation.
+I0803 17:00:49.739717  5831 net.cpp:217] local_relu2 needs backward computation.
+I0803 17:00:49.739723  5831 net.cpp:217] local_conv2 needs backward computation.
+I0803 17:00:49.739730  5831 net.cpp:217] local_pool1 needs backward computation.
+I0803 17:00:49.739737  5831 net.cpp:217] local_norm1 needs backward computation.
+I0803 17:00:49.739745  5831 net.cpp:217] local_relu1 needs backward computation.
+I0803 17:00:49.739751  5831 net.cpp:217] local_conv1 needs backward computation.
+I0803 17:00:49.739759  5831 net.cpp:217] st_layer needs backward computation.
+I0803 17:00:49.739768  5831 net.cpp:217] st_pts needs backward computation.
+I0803 17:00:49.739775  5831 net.cpp:217] theta_loss needs backward computation.
+I0803 17:00:49.739784  5831 net.cpp:217] theta_loc_reg_affine_0_split needs backward computation.
+I0803 17:00:49.739791  5831 net.cpp:217] loc_reg_affine needs backward computation.
+I0803 17:00:49.739799  5831 net.cpp:217] loss needs backward computation.
+I0803 17:00:49.739806  5831 net.cpp:217] 68point_68point_0_split needs backward computation.
+I0803 17:00:49.739814  5831 net.cpp:217] 68point needs backward computation.
+I0803 17:00:49.739821  5831 net.cpp:217] drop7 needs backward computation.
+I0803 17:00:49.739830  5831 net.cpp:217] relu7 needs backward computation.
+I0803 17:00:49.739853  5831 net.cpp:217] fc7 needs backward computation.
+I0803 17:00:49.739862  5831 net.cpp:217] drop6 needs backward computation.
+I0803 17:00:49.739869  5831 net.cpp:217] relu6 needs backward computation.
+I0803 17:00:49.739876  5831 net.cpp:217] fc6 needs backward computation.
+I0803 17:00:49.739884  5831 net.cpp:217] pool3 needs backward computation.
+I0803 17:00:49.739892  5831 net.cpp:217] relu5 needs backward computation.
+I0803 17:00:49.739907  5831 net.cpp:217] conv5 needs backward computation.
+I0803 17:00:49.739914  5831 net.cpp:217] relu4 needs backward computation.
+I0803 17:00:49.739922  5831 net.cpp:217] conv4 needs backward computation.
+I0803 17:00:49.739928  5831 net.cpp:217] relu3 needs backward computation.
+I0803 17:00:49.739935  5831 net.cpp:217] conv3 needs backward computation.
+I0803 17:00:49.739943  5831 net.cpp:217] pool2 needs backward computation.
+I0803 17:00:49.739949  5831 net.cpp:217] relu2 needs backward computation.
+I0803 17:00:49.739956  5831 net.cpp:217] conv2 needs backward computation.
+I0803 17:00:49.739964  5831 net.cpp:217] pool1 needs backward computation.
+I0803 17:00:49.739970  5831 net.cpp:217] norm1 needs backward computation.
+I0803 17:00:49.739984  5831 net.cpp:217] relu1 needs backward computation.
+I0803 17:00:49.739990  5831 net.cpp:217] conv1 needs backward computation.
+I0803 17:00:49.739998  5831 net.cpp:219] label_facial_point_1_split does not need backward computation.
+I0803 17:00:49.740006  5831 net.cpp:219] data_facial_point_0_split does not need backward computation.
+I0803 17:00:49.740015  5831 net.cpp:219] facial_point does not need backward computation.
+I0803 17:00:49.740021  5831 net.cpp:261] This network produces output local/loss
+I0803 17:00:49.740030  5831 net.cpp:261] This network produces output loss
+I0803 17:00:49.740036  5831 net.cpp:261] This network produces output theta_loss
+I0803 17:00:49.740073  5831 net.cpp:274] Network initialization done.
+I0803 17:00:49.741670  5831 solver.cpp:181] Creating test net (#0) specified by net file: train_val.prototxt
+I0803 17:00:49.741753  5831 net.cpp:313] The NetState phase (1) differed from the phase (0) specified by a rule in layer facial_point
+I0803 17:00:49.742089  5831 net.cpp:49] Initializing net from parameters: 
+name: "facial_point_net"
+state {
+  phase: TEST
+}
+layer {
+  name: "facial_point"
+  type: "NewFacialPointData"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+  }
+  new_facial_point_data_param {
+    source: "test_list.txt"
+    batch_size: 32
+    new_height: 224
+    new_width: 224
+    is_color: true
+    point_num: 68
+    ext_scale: 1.2
+    xy_mean: 0.03
+    xy_std: 0.03
+    wh_mean: 1
+    wh_std: 0.03
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 7
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "conv1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0005
+    beta: 0.75
+    k: 2
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "norm1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "pool3"
+  top: "fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "fc6"
+}
+layer {
+  name: "drop6"
+  type: "Dropout"
+  bottom: "fc6"
+  top: "fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "fc7"
+}
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "fc7"
+  top: "fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "68point"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "68point"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 136
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "EuclideanLoss"
+  bottom: "68point"
+  bottom: "label"
+  top: "loss"
+}
+layer {
+  name: "loc_reg_affine"
+  type: "InnerProduct"
+  bottom: "68point"
+  top: "theta"
+  inner_product_param {
+    num_output: 6
+    weight_filler {
+      type: "constant"
+      value: 0
+    }
+    bias_filler {
+      type: "file"
+      file: "bias_init.txt"
+    }
+  }
+}
+layer {
+  name: "theta_loss"
+  type: "LocLoss"
+  bottom: "theta"
+  top: "theta_loss"
+  loss_weight: 1
+  loc_loss_param {
+    threshold: 1
+  }
+}
+layer {
+  name: "st_pts"
+  type: "PointTransformer"
+  bottom: "label"
+  bottom: "theta"
+  top: "local/label"
+  propagate_down: false
+  propagate_down: false
+  pt_param {
+    in_width: 224
+    in_height: 224
+    out_width: 224
+    out_height: 224
+    transform_type: CROP
+  }
+}
+layer {
+  name: "st_layer"
+  type: "SpatialTransformer"
+  bottom: "data"
+  bottom: "theta"
+  top: "local/data"
+  st_param {
+    output_H: 224
+    output_W: 224
+    to_compute_dU: false
+  }
+}
+layer {
+  name: "local_conv1"
+  type: "Convolution"
+  bottom: "local/data"
+  top: "local/conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 7
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu1"
+  type: "ReLU"
+  bottom: "local/conv1"
+  top: "local/conv1"
+}
+layer {
+  name: "local_norm1"
+  type: "LRN"
+  bottom: "local/conv1"
+  top: "local/norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0005
+    beta: 0.75
+    k: 2
+  }
+}
+layer {
+  name: "local_pool1"
+  type: "Pooling"
+  bottom: "local/norm1"
+  top: "local/pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "local_conv2"
+  type: "Convolution"
+  bottom: "local/pool1"
+  top: "local/conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu2"
+  type: "ReLU"
+  bottom: "local/conv2"
+  top: "local/conv2"
+}
+layer {
+  name: "local_pool2"
+  type: "Pooling"
+  bottom: "local/conv2"
+  top: "local/pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "local_conv3"
+  type: "Convolution"
+  bottom: "local/pool2"
+  top: "local/conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu3"
+  type: "ReLU"
+  bottom: "local/conv3"
+  top: "local/conv3"
+}
+layer {
+  name: "local_conv4"
+  type: "Convolution"
+  bottom: "local/conv3"
+  top: "local/conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu4"
+  type: "ReLU"
+  bottom: "local/conv4"
+  top: "local/conv4"
+}
+layer {
+  name: "local_conv5"
+  type: "Convolution"
+  bottom: "local/conv4"
+  top: "local/conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+}
+layer {
+  name: "local_relu5"
+  type: "ReLU"
+  bottom: "local/conv5"
+  top: "local/conv5"
+}
+layer {
+  name: "local_pool3"
+  type: "Pooling"
+  bottom: "local/conv5"
+  top: "local/pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 3
+  }
+}
+layer {
+  name: "local_fc6"
+  type: "InnerProduct"
+  bottom: "local/pool3"
+  top: "local/fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "local_relu6"
+  type: "ReLU"
+  bottom: "local/fc6"
+  top: "local/fc6"
+}
+layer {
+  name: "local_drop6"
+  type: "Dropout"
+  bottom: "local/fc6"
+  top: "local/fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "local_fc7"
+  type: "InnerProduct"
+  bottom: "local/fc6"
+  top: "local/fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "local_relu7"
+  type: "ReLU"
+  bottom: "local/fc7"
+  top: "local/fc7"
+}
+layer {
+  name: "local_drop7"
+  type: "Dropout"
+  bottom: "local/fc7"
+  top: "local/fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "local_68point"
+  type: "InnerProduct"
+  bottom: "local/fc7"
+  top: "local/68point"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 136
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "local_loss"
+  type: "EuclideanLoss"
+  bottom: "local/68point"
+  bottom: "local/label"
+  top: "local/loss"
+}
+I0803 17:00:49.744114  5831 layer_factory.hpp:77] Creating layer facial_point
+I0803 17:00:49.744145  5831 net.cpp:91] Creating Layer facial_point
+I0803 17:00:49.744156  5831 net.cpp:399] facial_point -> data
+I0803 17:00:49.744170  5831 net.cpp:399] facial_point -> label
+I0803 17:00:49.744184  5831 new_facial_point_data_layer.cpp:187] Opening file test_list.txt
+I0803 17:00:49.744514  5831 new_facial_point_data_layer.cpp:203] A total of 689 images.
+I0803 17:00:49.751916  5831 new_facial_point_data_layer.cpp:263] output data size: 32,3,224,224
+I0803 17:00:49.792081  5831 net.cpp:141] Setting up facial_point
+I0803 17:00:49.792135  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:49.792146  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:49.792155  5831 net.cpp:156] Memory required for data: 19284992
+I0803 17:00:49.792167  5831 layer_factory.hpp:77] Creating layer data_facial_point_0_split
+I0803 17:00:49.792187  5831 net.cpp:91] Creating Layer data_facial_point_0_split
+I0803 17:00:49.792198  5831 net.cpp:425] data_facial_point_0_split <- data
+I0803 17:00:49.792212  5831 net.cpp:399] data_facial_point_0_split -> data_facial_point_0_split_0
+I0803 17:00:49.792229  5831 net.cpp:399] data_facial_point_0_split -> data_facial_point_0_split_1
+I0803 17:00:49.792330  5831 net.cpp:141] Setting up data_facial_point_0_split
+I0803 17:00:49.792347  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:49.792356  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:49.792364  5831 net.cpp:156] Memory required for data: 57820160
+I0803 17:00:49.792374  5831 layer_factory.hpp:77] Creating layer label_facial_point_1_split
+I0803 17:00:49.792387  5831 net.cpp:91] Creating Layer label_facial_point_1_split
+I0803 17:00:49.792394  5831 net.cpp:425] label_facial_point_1_split <- label
+I0803 17:00:49.792409  5831 net.cpp:399] label_facial_point_1_split -> label_facial_point_1_split_0
+I0803 17:00:49.792423  5831 net.cpp:399] label_facial_point_1_split -> label_facial_point_1_split_1
+I0803 17:00:49.792493  5831 net.cpp:141] Setting up label_facial_point_1_split
+I0803 17:00:49.792510  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:49.792520  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:49.792527  5831 net.cpp:156] Memory required for data: 57854976
+I0803 17:00:49.792537  5831 layer_factory.hpp:77] Creating layer conv1
+I0803 17:00:49.792557  5831 net.cpp:91] Creating Layer conv1
+I0803 17:00:49.792565  5831 net.cpp:425] conv1 <- data_facial_point_0_split_0
+I0803 17:00:49.792577  5831 net.cpp:399] conv1 -> conv1
+I0803 17:00:49.792994  5831 net.cpp:141] Setting up conv1
+I0803 17:00:49.793011  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:49.793020  5831 net.cpp:156] Memory required for data: 203848704
+I0803 17:00:49.793035  5831 layer_factory.hpp:77] Creating layer relu1
+I0803 17:00:49.793046  5831 net.cpp:91] Creating Layer relu1
+I0803 17:00:49.793056  5831 net.cpp:425] relu1 <- conv1
+I0803 17:00:49.793066  5831 net.cpp:386] relu1 -> conv1 (in-place)
+I0803 17:00:49.793076  5831 net.cpp:141] Setting up relu1
+I0803 17:00:49.793087  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:49.793093  5831 net.cpp:156] Memory required for data: 349842432
+I0803 17:00:49.793102  5831 layer_factory.hpp:77] Creating layer norm1
+I0803 17:00:49.793113  5831 net.cpp:91] Creating Layer norm1
+I0803 17:00:49.793121  5831 net.cpp:425] norm1 <- conv1
+I0803 17:00:49.793130  5831 net.cpp:399] norm1 -> norm1
+I0803 17:00:49.793172  5831 net.cpp:141] Setting up norm1
+I0803 17:00:49.793193  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:49.793201  5831 net.cpp:156] Memory required for data: 495836160
+I0803 17:00:49.793208  5831 layer_factory.hpp:77] Creating layer pool1
+I0803 17:00:49.793220  5831 net.cpp:91] Creating Layer pool1
+I0803 17:00:49.793229  5831 net.cpp:425] pool1 <- norm1
+I0803 17:00:49.793263  5831 net.cpp:399] pool1 -> pool1
+I0803 17:00:49.793309  5831 net.cpp:141] Setting up pool1
+I0803 17:00:49.793324  5831 net.cpp:148] Top shape: 32 96 37 37 (4205568)
+I0803 17:00:49.793331  5831 net.cpp:156] Memory required for data: 512658432
+I0803 17:00:49.793339  5831 layer_factory.hpp:77] Creating layer conv2
+I0803 17:00:49.793352  5831 net.cpp:91] Creating Layer conv2
+I0803 17:00:49.793360  5831 net.cpp:425] conv2 <- pool1
+I0803 17:00:49.793372  5831 net.cpp:399] conv2 -> conv2
+I0803 17:00:49.799264  5831 net.cpp:141] Setting up conv2
+I0803 17:00:49.799291  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:49.799300  5831 net.cpp:156] Memory required for data: 548342784
+I0803 17:00:49.799314  5831 layer_factory.hpp:77] Creating layer relu2
+I0803 17:00:49.799329  5831 net.cpp:91] Creating Layer relu2
+I0803 17:00:49.799337  5831 net.cpp:425] relu2 <- conv2
+I0803 17:00:49.799348  5831 net.cpp:386] relu2 -> conv2 (in-place)
+I0803 17:00:49.799360  5831 net.cpp:141] Setting up relu2
+I0803 17:00:49.799368  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:49.799376  5831 net.cpp:156] Memory required for data: 584027136
+I0803 17:00:49.799381  5831 layer_factory.hpp:77] Creating layer pool2
+I0803 17:00:49.799392  5831 net.cpp:91] Creating Layer pool2
+I0803 17:00:49.799401  5831 net.cpp:425] pool2 <- conv2
+I0803 17:00:49.799412  5831 net.cpp:399] pool2 -> pool2
+I0803 17:00:49.799455  5831 net.cpp:141] Setting up pool2
+I0803 17:00:49.799465  5831 net.cpp:148] Top shape: 32 256 17 17 (2367488)
+I0803 17:00:49.799473  5831 net.cpp:156] Memory required for data: 593497088
+I0803 17:00:49.799479  5831 layer_factory.hpp:77] Creating layer conv3
+I0803 17:00:49.799494  5831 net.cpp:91] Creating Layer conv3
+I0803 17:00:49.799501  5831 net.cpp:425] conv3 <- pool2
+I0803 17:00:49.799512  5831 net.cpp:399] conv3 -> conv3
+I0803 17:00:49.811043  5831 net.cpp:141] Setting up conv3
+I0803 17:00:49.811074  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:49.811082  5831 net.cpp:156] Memory required for data: 612436992
+I0803 17:00:49.811099  5831 layer_factory.hpp:77] Creating layer relu3
+I0803 17:00:49.811111  5831 net.cpp:91] Creating Layer relu3
+I0803 17:00:49.811120  5831 net.cpp:425] relu3 <- conv3
+I0803 17:00:49.811131  5831 net.cpp:386] relu3 -> conv3 (in-place)
+I0803 17:00:49.811142  5831 net.cpp:141] Setting up relu3
+I0803 17:00:49.811151  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:49.811157  5831 net.cpp:156] Memory required for data: 631376896
+I0803 17:00:49.811164  5831 layer_factory.hpp:77] Creating layer conv4
+I0803 17:00:49.811180  5831 net.cpp:91] Creating Layer conv4
+I0803 17:00:49.811189  5831 net.cpp:425] conv4 <- conv3
+I0803 17:00:49.811202  5831 net.cpp:399] conv4 -> conv4
+I0803 17:00:49.833741  5831 net.cpp:141] Setting up conv4
+I0803 17:00:49.833784  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:49.833793  5831 net.cpp:156] Memory required for data: 650316800
+I0803 17:00:49.833807  5831 layer_factory.hpp:77] Creating layer relu4
+I0803 17:00:49.833830  5831 net.cpp:91] Creating Layer relu4
+I0803 17:00:49.833840  5831 net.cpp:425] relu4 <- conv4
+I0803 17:00:49.833858  5831 net.cpp:386] relu4 -> conv4 (in-place)
+I0803 17:00:49.833874  5831 net.cpp:141] Setting up relu4
+I0803 17:00:49.833884  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:49.833890  5831 net.cpp:156] Memory required for data: 669256704
+I0803 17:00:49.833899  5831 layer_factory.hpp:77] Creating layer conv5
+I0803 17:00:49.833915  5831 net.cpp:91] Creating Layer conv5
+I0803 17:00:49.833928  5831 net.cpp:425] conv5 <- conv4
+I0803 17:00:49.833942  5831 net.cpp:399] conv5 -> conv5
+I0803 17:00:49.857128  5831 net.cpp:141] Setting up conv5
+I0803 17:00:49.857168  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:49.857183  5831 net.cpp:156] Memory required for data: 688196608
+I0803 17:00:49.857213  5831 layer_factory.hpp:77] Creating layer relu5
+I0803 17:00:49.857229  5831 net.cpp:91] Creating Layer relu5
+I0803 17:00:49.857239  5831 net.cpp:425] relu5 <- conv5
+I0803 17:00:49.857280  5831 net.cpp:386] relu5 -> conv5 (in-place)
+I0803 17:00:49.857296  5831 net.cpp:141] Setting up relu5
+I0803 17:00:49.857306  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:49.857313  5831 net.cpp:156] Memory required for data: 707136512
+I0803 17:00:49.857321  5831 layer_factory.hpp:77] Creating layer pool3
+I0803 17:00:49.857337  5831 net.cpp:91] Creating Layer pool3
+I0803 17:00:49.857347  5831 net.cpp:425] pool3 <- conv5
+I0803 17:00:49.857355  5831 net.cpp:399] pool3 -> pool3
+I0803 17:00:49.857401  5831 net.cpp:141] Setting up pool3
+I0803 17:00:49.857416  5831 net.cpp:148] Top shape: 32 512 6 6 (589824)
+I0803 17:00:49.857424  5831 net.cpp:156] Memory required for data: 709495808
+I0803 17:00:49.857431  5831 layer_factory.hpp:77] Creating layer fc6
+I0803 17:00:49.857445  5831 net.cpp:91] Creating Layer fc6
+I0803 17:00:49.857453  5831 net.cpp:425] fc6 <- pool3
+I0803 17:00:49.857463  5831 net.cpp:399] fc6 -> fc6
+I0803 17:00:50.552407  5831 net.cpp:141] Setting up fc6
+I0803 17:00:50.552459  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:50.552467  5831 net.cpp:156] Memory required for data: 710020096
+I0803 17:00:50.552487  5831 layer_factory.hpp:77] Creating layer relu6
+I0803 17:00:50.552510  5831 net.cpp:91] Creating Layer relu6
+I0803 17:00:50.552520  5831 net.cpp:425] relu6 <- fc6
+I0803 17:00:50.552531  5831 net.cpp:386] relu6 -> fc6 (in-place)
+I0803 17:00:50.552546  5831 net.cpp:141] Setting up relu6
+I0803 17:00:50.552554  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:50.552561  5831 net.cpp:156] Memory required for data: 710544384
+I0803 17:00:50.552567  5831 layer_factory.hpp:77] Creating layer drop6
+I0803 17:00:50.552579  5831 net.cpp:91] Creating Layer drop6
+I0803 17:00:50.552587  5831 net.cpp:425] drop6 <- fc6
+I0803 17:00:50.552595  5831 net.cpp:386] drop6 -> fc6 (in-place)
+I0803 17:00:50.552641  5831 net.cpp:141] Setting up drop6
+I0803 17:00:50.552661  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:50.552669  5831 net.cpp:156] Memory required for data: 711068672
+I0803 17:00:50.552675  5831 layer_factory.hpp:77] Creating layer fc7
+I0803 17:00:50.552688  5831 net.cpp:91] Creating Layer fc7
+I0803 17:00:50.552696  5831 net.cpp:425] fc7 <- fc6
+I0803 17:00:50.552705  5831 net.cpp:399] fc7 -> fc7
+I0803 17:00:50.695603  5831 net.cpp:141] Setting up fc7
+I0803 17:00:50.695647  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:50.695654  5831 net.cpp:156] Memory required for data: 711592960
+I0803 17:00:50.695667  5831 layer_factory.hpp:77] Creating layer relu7
+I0803 17:00:50.695683  5831 net.cpp:91] Creating Layer relu7
+I0803 17:00:50.695690  5831 net.cpp:425] relu7 <- fc7
+I0803 17:00:50.695703  5831 net.cpp:386] relu7 -> fc7 (in-place)
+I0803 17:00:50.695719  5831 net.cpp:141] Setting up relu7
+I0803 17:00:50.695726  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:50.695734  5831 net.cpp:156] Memory required for data: 712117248
+I0803 17:00:50.695746  5831 layer_factory.hpp:77] Creating layer drop7
+I0803 17:00:50.695758  5831 net.cpp:91] Creating Layer drop7
+I0803 17:00:50.695765  5831 net.cpp:425] drop7 <- fc7
+I0803 17:00:50.695773  5831 net.cpp:386] drop7 -> fc7 (in-place)
+I0803 17:00:50.695816  5831 net.cpp:141] Setting up drop7
+I0803 17:00:50.695834  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:50.695842  5831 net.cpp:156] Memory required for data: 712641536
+I0803 17:00:50.695848  5831 layer_factory.hpp:77] Creating layer 68point
+I0803 17:00:50.695860  5831 net.cpp:91] Creating Layer 68point
+I0803 17:00:50.695868  5831 net.cpp:425] 68point <- fc7
+I0803 17:00:50.695876  5831 net.cpp:399] 68point -> 68point
+I0803 17:00:50.700711  5831 net.cpp:141] Setting up 68point
+I0803 17:00:50.700731  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:50.700738  5831 net.cpp:156] Memory required for data: 712658944
+I0803 17:00:50.700748  5831 layer_factory.hpp:77] Creating layer 68point_68point_0_split
+I0803 17:00:50.700758  5831 net.cpp:91] Creating Layer 68point_68point_0_split
+I0803 17:00:50.700767  5831 net.cpp:425] 68point_68point_0_split <- 68point
+I0803 17:00:50.700803  5831 net.cpp:399] 68point_68point_0_split -> 68point_68point_0_split_0
+I0803 17:00:50.700815  5831 net.cpp:399] 68point_68point_0_split -> 68point_68point_0_split_1
+I0803 17:00:50.700855  5831 net.cpp:141] Setting up 68point_68point_0_split
+I0803 17:00:50.700896  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:50.700904  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:50.700911  5831 net.cpp:156] Memory required for data: 712693760
+I0803 17:00:50.700920  5831 layer_factory.hpp:77] Creating layer loss
+I0803 17:00:50.700932  5831 net.cpp:91] Creating Layer loss
+I0803 17:00:50.700940  5831 net.cpp:425] loss <- 68point_68point_0_split_0
+I0803 17:00:50.700949  5831 net.cpp:425] loss <- label_facial_point_1_split_0
+I0803 17:00:50.700958  5831 net.cpp:399] loss -> loss
+I0803 17:00:50.700997  5831 net.cpp:141] Setting up loss
+I0803 17:00:50.701009  5831 net.cpp:148] Top shape: (1)
+I0803 17:00:50.701015  5831 net.cpp:151]     with loss weight 1
+I0803 17:00:50.701037  5831 net.cpp:156] Memory required for data: 712693764
+I0803 17:00:50.701045  5831 layer_factory.hpp:77] Creating layer loc_reg_affine
+I0803 17:00:50.701056  5831 net.cpp:91] Creating Layer loc_reg_affine
+I0803 17:00:50.701064  5831 net.cpp:425] loc_reg_affine <- 68point_68point_0_split_1
+I0803 17:00:50.701076  5831 net.cpp:399] loc_reg_affine -> theta
+I0803 17:00:50.701270  5831 net.cpp:141] Setting up loc_reg_affine
+I0803 17:00:50.701287  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:50.701292  5831 net.cpp:156] Memory required for data: 712694532
+I0803 17:00:50.701310  5831 layer_factory.hpp:77] Creating layer theta_loc_reg_affine_0_split
+I0803 17:00:50.701323  5831 net.cpp:91] Creating Layer theta_loc_reg_affine_0_split
+I0803 17:00:50.701328  5831 net.cpp:425] theta_loc_reg_affine_0_split <- theta
+I0803 17:00:50.701340  5831 net.cpp:399] theta_loc_reg_affine_0_split -> theta_loc_reg_affine_0_split_0
+I0803 17:00:50.701351  5831 net.cpp:399] theta_loc_reg_affine_0_split -> theta_loc_reg_affine_0_split_1
+I0803 17:00:50.701361  5831 net.cpp:399] theta_loc_reg_affine_0_split -> theta_loc_reg_affine_0_split_2
+I0803 17:00:50.701411  5831 net.cpp:141] Setting up theta_loc_reg_affine_0_split
+I0803 17:00:50.701421  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:50.701427  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:50.701434  5831 net.cpp:148] Top shape: 32 6 (192)
+I0803 17:00:50.701441  5831 net.cpp:156] Memory required for data: 712696836
+I0803 17:00:50.701447  5831 layer_factory.hpp:77] Creating layer theta_loss
+I0803 17:00:50.701457  5831 net.cpp:91] Creating Layer theta_loss
+I0803 17:00:50.701464  5831 net.cpp:425] theta_loss <- theta_loc_reg_affine_0_split_0
+I0803 17:00:50.701472  5831 net.cpp:399] theta_loss -> theta_loss
+I0803 17:00:50.701521  5831 net.cpp:141] Setting up theta_loss
+I0803 17:00:50.701531  5831 net.cpp:148] Top shape: (1)
+I0803 17:00:50.701537  5831 net.cpp:151]     with loss weight 1
+I0803 17:00:50.701545  5831 net.cpp:156] Memory required for data: 712696840
+I0803 17:00:50.701550  5831 layer_factory.hpp:77] Creating layer st_pts
+I0803 17:00:50.701563  5831 net.cpp:91] Creating Layer st_pts
+I0803 17:00:50.701582  5831 net.cpp:425] st_pts <- label_facial_point_1_split_1
+I0803 17:00:50.701589  5831 net.cpp:425] st_pts <- theta_loc_reg_affine_0_split_1
+I0803 17:00:50.701599  5831 net.cpp:399] st_pts -> local/label
+I0803 17:00:50.701622  5831 net.cpp:141] Setting up st_pts
+I0803 17:00:50.701632  5831 net.cpp:148] Top shape: 32 136 1 1 (4352)
+I0803 17:00:50.701637  5831 net.cpp:156] Memory required for data: 712714248
+I0803 17:00:50.701643  5831 layer_factory.hpp:77] Creating layer st_layer
+I0803 17:00:50.701654  5831 net.cpp:91] Creating Layer st_layer
+I0803 17:00:50.701660  5831 net.cpp:425] st_layer <- data_facial_point_0_split_1
+I0803 17:00:50.701668  5831 net.cpp:425] st_layer <- theta_loc_reg_affine_0_split_2
+I0803 17:00:50.701676  5831 net.cpp:399] st_layer -> local/data
+I0803 17:00:50.703517  5831 net.cpp:141] Setting up st_layer
+I0803 17:00:50.703532  5831 net.cpp:148] Top shape: 32 3 224 224 (4816896)
+I0803 17:00:50.703550  5831 net.cpp:156] Memory required for data: 731981832
+I0803 17:00:50.703558  5831 layer_factory.hpp:77] Creating layer local_conv1
+I0803 17:00:50.703574  5831 net.cpp:91] Creating Layer local_conv1
+I0803 17:00:50.703583  5831 net.cpp:425] local_conv1 <- local/data
+I0803 17:00:50.703593  5831 net.cpp:399] local_conv1 -> local/conv1
+I0803 17:00:50.703946  5831 net.cpp:141] Setting up local_conv1
+I0803 17:00:50.703959  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:50.703965  5831 net.cpp:156] Memory required for data: 877975560
+I0803 17:00:50.703974  5831 layer_factory.hpp:77] Creating layer local_relu1
+I0803 17:00:50.703991  5831 net.cpp:91] Creating Layer local_relu1
+I0803 17:00:50.703997  5831 net.cpp:425] local_relu1 <- local/conv1
+I0803 17:00:50.704006  5831 net.cpp:386] local_relu1 -> local/conv1 (in-place)
+I0803 17:00:50.704015  5831 net.cpp:141] Setting up local_relu1
+I0803 17:00:50.704022  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:50.704028  5831 net.cpp:156] Memory required for data: 1023969288
+I0803 17:00:50.704033  5831 layer_factory.hpp:77] Creating layer local_norm1
+I0803 17:00:50.704044  5831 net.cpp:91] Creating Layer local_norm1
+I0803 17:00:50.704051  5831 net.cpp:425] local_norm1 <- local/conv1
+I0803 17:00:50.704057  5831 net.cpp:399] local_norm1 -> local/norm1
+I0803 17:00:50.704097  5831 net.cpp:141] Setting up local_norm1
+I0803 17:00:50.704105  5831 net.cpp:148] Top shape: 32 96 109 109 (36498432)
+I0803 17:00:50.704111  5831 net.cpp:156] Memory required for data: 1169963016
+I0803 17:00:50.704118  5831 layer_factory.hpp:77] Creating layer local_pool1
+I0803 17:00:50.704126  5831 net.cpp:91] Creating Layer local_pool1
+I0803 17:00:50.704133  5831 net.cpp:425] local_pool1 <- local/norm1
+I0803 17:00:50.704140  5831 net.cpp:399] local_pool1 -> local/pool1
+I0803 17:00:50.704177  5831 net.cpp:141] Setting up local_pool1
+I0803 17:00:50.704186  5831 net.cpp:148] Top shape: 32 96 37 37 (4205568)
+I0803 17:00:50.704191  5831 net.cpp:156] Memory required for data: 1186785288
+I0803 17:00:50.704198  5831 layer_factory.hpp:77] Creating layer local_conv2
+I0803 17:00:50.704210  5831 net.cpp:91] Creating Layer local_conv2
+I0803 17:00:50.704216  5831 net.cpp:425] local_conv2 <- local/pool1
+I0803 17:00:50.704224  5831 net.cpp:399] local_conv2 -> local/conv2
+I0803 17:00:50.709698  5831 net.cpp:141] Setting up local_conv2
+I0803 17:00:50.709720  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:50.709728  5831 net.cpp:156] Memory required for data: 1222469640
+I0803 17:00:50.709738  5831 layer_factory.hpp:77] Creating layer local_relu2
+I0803 17:00:50.709748  5831 net.cpp:91] Creating Layer local_relu2
+I0803 17:00:50.709755  5831 net.cpp:425] local_relu2 <- local/conv2
+I0803 17:00:50.709765  5831 net.cpp:386] local_relu2 -> local/conv2 (in-place)
+I0803 17:00:50.709774  5831 net.cpp:141] Setting up local_relu2
+I0803 17:00:50.709782  5831 net.cpp:148] Top shape: 32 256 33 33 (8921088)
+I0803 17:00:50.709789  5831 net.cpp:156] Memory required for data: 1258153992
+I0803 17:00:50.709794  5831 layer_factory.hpp:77] Creating layer local_pool2
+I0803 17:00:50.709803  5831 net.cpp:91] Creating Layer local_pool2
+I0803 17:00:50.709810  5831 net.cpp:425] local_pool2 <- local/conv2
+I0803 17:00:50.709817  5831 net.cpp:399] local_pool2 -> local/pool2
+I0803 17:00:50.709859  5831 net.cpp:141] Setting up local_pool2
+I0803 17:00:50.709870  5831 net.cpp:148] Top shape: 32 256 17 17 (2367488)
+I0803 17:00:50.709877  5831 net.cpp:156] Memory required for data: 1267623944
+I0803 17:00:50.709882  5831 layer_factory.hpp:77] Creating layer local_conv3
+I0803 17:00:50.709894  5831 net.cpp:91] Creating Layer local_conv3
+I0803 17:00:50.709902  5831 net.cpp:425] local_conv3 <- local/pool2
+I0803 17:00:50.709910  5831 net.cpp:399] local_conv3 -> local/conv3
+I0803 17:00:50.719769  5831 net.cpp:141] Setting up local_conv3
+I0803 17:00:50.719818  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:50.719825  5831 net.cpp:156] Memory required for data: 1286563848
+I0803 17:00:50.719858  5831 layer_factory.hpp:77] Creating layer local_relu3
+I0803 17:00:50.719874  5831 net.cpp:91] Creating Layer local_relu3
+I0803 17:00:50.719884  5831 net.cpp:425] local_relu3 <- local/conv3
+I0803 17:00:50.719895  5831 net.cpp:386] local_relu3 -> local/conv3 (in-place)
+I0803 17:00:50.719907  5831 net.cpp:141] Setting up local_relu3
+I0803 17:00:50.719916  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:50.719923  5831 net.cpp:156] Memory required for data: 1305503752
+I0803 17:00:50.719930  5831 layer_factory.hpp:77] Creating layer local_conv4
+I0803 17:00:50.719946  5831 net.cpp:91] Creating Layer local_conv4
+I0803 17:00:50.719954  5831 net.cpp:425] local_conv4 <- local/conv3
+I0803 17:00:50.719964  5831 net.cpp:399] local_conv4 -> local/conv4
+I0803 17:00:50.740344  5831 net.cpp:141] Setting up local_conv4
+I0803 17:00:50.740391  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:50.740398  5831 net.cpp:156] Memory required for data: 1324443656
+I0803 17:00:50.740411  5831 layer_factory.hpp:77] Creating layer local_relu4
+I0803 17:00:50.740427  5831 net.cpp:91] Creating Layer local_relu4
+I0803 17:00:50.740437  5831 net.cpp:425] local_relu4 <- local/conv4
+I0803 17:00:50.740448  5831 net.cpp:386] local_relu4 -> local/conv4 (in-place)
+I0803 17:00:50.740463  5831 net.cpp:141] Setting up local_relu4
+I0803 17:00:50.740473  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:50.740478  5831 net.cpp:156] Memory required for data: 1343383560
+I0803 17:00:50.740485  5831 layer_factory.hpp:77] Creating layer local_conv5
+I0803 17:00:50.740504  5831 net.cpp:91] Creating Layer local_conv5
+I0803 17:00:50.740512  5831 net.cpp:425] local_conv5 <- local/conv4
+I0803 17:00:50.740527  5831 net.cpp:399] local_conv5 -> local/conv5
+I0803 17:00:50.760993  5831 net.cpp:141] Setting up local_conv5
+I0803 17:00:50.761029  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:50.761036  5831 net.cpp:156] Memory required for data: 1362323464
+I0803 17:00:50.761049  5831 layer_factory.hpp:77] Creating layer local_relu5
+I0803 17:00:50.761064  5831 net.cpp:91] Creating Layer local_relu5
+I0803 17:00:50.761072  5831 net.cpp:425] local_relu5 <- local/conv5
+I0803 17:00:50.761083  5831 net.cpp:386] local_relu5 -> local/conv5 (in-place)
+I0803 17:00:50.761098  5831 net.cpp:141] Setting up local_relu5
+I0803 17:00:50.761106  5831 net.cpp:148] Top shape: 32 512 17 17 (4734976)
+I0803 17:00:50.761113  5831 net.cpp:156] Memory required for data: 1381263368
+I0803 17:00:50.761119  5831 layer_factory.hpp:77] Creating layer local_pool3
+I0803 17:00:50.761132  5831 net.cpp:91] Creating Layer local_pool3
+I0803 17:00:50.761138  5831 net.cpp:425] local_pool3 <- local/conv5
+I0803 17:00:50.761148  5831 net.cpp:399] local_pool3 -> local/pool3
+I0803 17:00:50.761204  5831 net.cpp:141] Setting up local_pool3
+I0803 17:00:50.761214  5831 net.cpp:148] Top shape: 32 512 6 6 (589824)
+I0803 17:00:50.761220  5831 net.cpp:156] Memory required for data: 1383622664
+I0803 17:00:50.761227  5831 layer_factory.hpp:77] Creating layer local_fc6
+I0803 17:00:50.761246  5831 net.cpp:91] Creating Layer local_fc6
+I0803 17:00:50.761253  5831 net.cpp:425] local_fc6 <- local/pool3
+I0803 17:00:50.761262  5831 net.cpp:399] local_fc6 -> local/fc6
+I0803 17:00:51.394021  5831 net.cpp:141] Setting up local_fc6
+I0803 17:00:51.394089  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:51.394098  5831 net.cpp:156] Memory required for data: 1384146952
+I0803 17:00:51.394119  5831 layer_factory.hpp:77] Creating layer local_relu6
+I0803 17:00:51.394142  5831 net.cpp:91] Creating Layer local_relu6
+I0803 17:00:51.394156  5831 net.cpp:425] local_relu6 <- local/fc6
+I0803 17:00:51.394167  5831 net.cpp:386] local_relu6 -> local/fc6 (in-place)
+I0803 17:00:51.394183  5831 net.cpp:141] Setting up local_relu6
+I0803 17:00:51.394192  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:51.394198  5831 net.cpp:156] Memory required for data: 1384671240
+I0803 17:00:51.394204  5831 layer_factory.hpp:77] Creating layer local_drop6
+I0803 17:00:51.394246  5831 net.cpp:91] Creating Layer local_drop6
+I0803 17:00:51.394254  5831 net.cpp:425] local_drop6 <- local/fc6
+I0803 17:00:51.394263  5831 net.cpp:386] local_drop6 -> local/fc6 (in-place)
+I0803 17:00:51.394315  5831 net.cpp:141] Setting up local_drop6
+I0803 17:00:51.394327  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:51.394333  5831 net.cpp:156] Memory required for data: 1385195528
+I0803 17:00:51.394340  5831 layer_factory.hpp:77] Creating layer local_fc7
+I0803 17:00:51.394353  5831 net.cpp:91] Creating Layer local_fc7
+I0803 17:00:51.394362  5831 net.cpp:425] local_fc7 <- local/fc6
+I0803 17:00:51.394371  5831 net.cpp:399] local_fc7 -> local/fc7
+I0803 17:00:51.535763  5831 net.cpp:141] Setting up local_fc7
+I0803 17:00:51.535821  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:51.535828  5831 net.cpp:156] Memory required for data: 1385719816
+I0803 17:00:51.535845  5831 layer_factory.hpp:77] Creating layer local_relu7
+I0803 17:00:51.535861  5831 net.cpp:91] Creating Layer local_relu7
+I0803 17:00:51.535871  5831 net.cpp:425] local_relu7 <- local/fc7
+I0803 17:00:51.535883  5831 net.cpp:386] local_relu7 -> local/fc7 (in-place)
+I0803 17:00:51.535898  5831 net.cpp:141] Setting up local_relu7
+I0803 17:00:51.535907  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:51.535913  5831 net.cpp:156] Memory required for data: 1386244104
+I0803 17:00:51.535919  5831 layer_factory.hpp:77] Creating layer local_drop7
+I0803 17:00:51.535931  5831 net.cpp:91] Creating Layer local_drop7
+I0803 17:00:51.535938  5831 net.cpp:425] local_drop7 <- local/fc7
+I0803 17:00:51.535948  5831 net.cpp:386] local_drop7 -> local/fc7 (in-place)
+I0803 17:00:51.535980  5831 net.cpp:141] Setting up local_drop7
+I0803 17:00:51.536008  5831 net.cpp:148] Top shape: 32 4096 (131072)
+I0803 17:00:51.536015  5831 net.cpp:156] Memory required for data: 1386768392
+I0803 17:00:51.536020  5831 layer_factory.hpp:77] Creating layer local_68point
+I0803 17:00:51.536036  5831 net.cpp:91] Creating Layer local_68point
+I0803 17:00:51.536042  5831 net.cpp:425] local_68point <- local/fc7
+I0803 17:00:51.536053  5831 net.cpp:399] local_68point -> local/68point
+I0803 17:00:51.540890  5831 net.cpp:141] Setting up local_68point
+I0803 17:00:51.540923  5831 net.cpp:148] Top shape: 32 136 (4352)
+I0803 17:00:51.540943  5831 net.cpp:156] Memory required for data: 1386785800
+I0803 17:00:51.540972  5831 layer_factory.hpp:77] Creating layer local_loss
+I0803 17:00:51.540987  5831 net.cpp:91] Creating Layer local_loss
+I0803 17:00:51.540994  5831 net.cpp:425] local_loss <- local/68point
+I0803 17:00:51.541002  5831 net.cpp:425] local_loss <- local/label
+I0803 17:00:51.541013  5831 net.cpp:399] local_loss -> local/loss
+I0803 17:00:51.541059  5831 net.cpp:141] Setting up local_loss
+I0803 17:00:51.541070  5831 net.cpp:148] Top shape: (1)
+I0803 17:00:51.541077  5831 net.cpp:151]     with loss weight 1
+I0803 17:00:51.541100  5831 net.cpp:156] Memory required for data: 1386785804
+I0803 17:00:51.541108  5831 net.cpp:217] local_loss needs backward computation.
+I0803 17:00:51.541115  5831 net.cpp:217] local_68point needs backward computation.
+I0803 17:00:51.541122  5831 net.cpp:217] local_drop7 needs backward computation.
+I0803 17:00:51.541129  5831 net.cpp:217] local_relu7 needs backward computation.
+I0803 17:00:51.541136  5831 net.cpp:217] local_fc7 needs backward computation.
+I0803 17:00:51.541142  5831 net.cpp:217] local_drop6 needs backward computation.
+I0803 17:00:51.541148  5831 net.cpp:217] local_relu6 needs backward computation.
+I0803 17:00:51.541155  5831 net.cpp:217] local_fc6 needs backward computation.
+I0803 17:00:51.541162  5831 net.cpp:217] local_pool3 needs backward computation.
+I0803 17:00:51.541170  5831 net.cpp:217] local_relu5 needs backward computation.
+I0803 17:00:51.541178  5831 net.cpp:217] local_conv5 needs backward computation.
+I0803 17:00:51.541187  5831 net.cpp:217] local_relu4 needs backward computation.
+I0803 17:00:51.541194  5831 net.cpp:217] local_conv4 needs backward computation.
+I0803 17:00:51.541203  5831 net.cpp:217] local_relu3 needs backward computation.
+I0803 17:00:51.541244  5831 net.cpp:217] local_conv3 needs backward computation.
+I0803 17:00:51.541261  5831 net.cpp:217] local_pool2 needs backward computation.
+I0803 17:00:51.541267  5831 net.cpp:217] local_relu2 needs backward computation.
+I0803 17:00:51.541275  5831 net.cpp:217] local_conv2 needs backward computation.
+I0803 17:00:51.541282  5831 net.cpp:217] local_pool1 needs backward computation.
+I0803 17:00:51.541288  5831 net.cpp:217] local_norm1 needs backward computation.
+I0803 17:00:51.541296  5831 net.cpp:217] local_relu1 needs backward computation.
+I0803 17:00:51.541301  5831 net.cpp:217] local_conv1 needs backward computation.
+I0803 17:00:51.541309  5831 net.cpp:217] st_layer needs backward computation.
+I0803 17:00:51.541317  5831 net.cpp:217] st_pts needs backward computation.
+I0803 17:00:51.541326  5831 net.cpp:217] theta_loss needs backward computation.
+I0803 17:00:51.541333  5831 net.cpp:217] theta_loc_reg_affine_0_split needs backward computation.
+I0803 17:00:51.541340  5831 net.cpp:217] loc_reg_affine needs backward computation.
+I0803 17:00:51.541347  5831 net.cpp:217] loss needs backward computation.
+I0803 17:00:51.541355  5831 net.cpp:217] 68point_68point_0_split needs backward computation.
+I0803 17:00:51.541363  5831 net.cpp:217] 68point needs backward computation.
+I0803 17:00:51.541369  5831 net.cpp:217] drop7 needs backward computation.
+I0803 17:00:51.541376  5831 net.cpp:217] relu7 needs backward computation.
+I0803 17:00:51.541388  5831 net.cpp:217] fc7 needs backward computation.
+I0803 17:00:51.541394  5831 net.cpp:217] drop6 needs backward computation.
+I0803 17:00:51.541401  5831 net.cpp:217] relu6 needs backward computation.
+I0803 17:00:51.541407  5831 net.cpp:217] fc6 needs backward computation.
+I0803 17:00:51.541414  5831 net.cpp:217] pool3 needs backward computation.
+I0803 17:00:51.541420  5831 net.cpp:217] relu5 needs backward computation.
+I0803 17:00:51.541427  5831 net.cpp:217] conv5 needs backward computation.
+I0803 17:00:51.541434  5831 net.cpp:217] relu4 needs backward computation.
+I0803 17:00:51.541440  5831 net.cpp:217] conv4 needs backward computation.
+I0803 17:00:51.541446  5831 net.cpp:217] relu3 needs backward computation.
+I0803 17:00:51.541452  5831 net.cpp:217] conv3 needs backward computation.
+I0803 17:00:51.541460  5831 net.cpp:217] pool2 needs backward computation.
+I0803 17:00:51.541466  5831 net.cpp:217] relu2 needs backward computation.
+I0803 17:00:51.541472  5831 net.cpp:217] conv2 needs backward computation.
+I0803 17:00:51.541479  5831 net.cpp:217] pool1 needs backward computation.
+I0803 17:00:51.541486  5831 net.cpp:217] norm1 needs backward computation.
+I0803 17:00:51.541493  5831 net.cpp:217] relu1 needs backward computation.
+I0803 17:00:51.541499  5831 net.cpp:217] conv1 needs backward computation.
+I0803 17:00:51.541507  5831 net.cpp:219] label_facial_point_1_split does not need backward computation.
+I0803 17:00:51.541514  5831 net.cpp:219] data_facial_point_0_split does not need backward computation.
+I0803 17:00:51.541522  5831 net.cpp:219] facial_point does not need backward computation.
+I0803 17:00:51.541527  5831 net.cpp:261] This network produces output local/loss
+I0803 17:00:51.541534  5831 net.cpp:261] This network produces output loss
+I0803 17:00:51.541540  5831 net.cpp:261] This network produces output theta_loss
+I0803 17:00:51.541573  5831 net.cpp:274] Network initialization done.
+I0803 17:00:51.541808  5831 solver.cpp:60] Solver scaffolding done.
+I0803 17:00:51.542861  5831 caffe.cpp:129] Finetuning from ./model/init_v2.0.caffemodel
+I0803 17:01:09.067596  5831 net.cpp:752] Ignoring source layer input
+I0803 17:01:09.067633  5831 net.cpp:752] Ignoring source layer data_input_0_split
+I0803 17:01:09.227623  5831 net.cpp:752] Ignoring source layer loc_reg_
+I0803 17:01:13.742807  5831 net.cpp:752] Ignoring source layer input
+I0803 17:01:13.742851  5831 net.cpp:752] Ignoring source layer data_input_0_split
+I0803 17:01:13.856983  5831 net.cpp:752] Ignoring source layer loc_reg_
+I0803 17:01:13.967490  5831 caffe.cpp:219] Starting Optimization
+I0803 17:01:13.967563  5831 solver.cpp:279] Solving facial_point_net
+I0803 17:01:13.967571  5831 solver.cpp:280] Learning Rate Policy: poly
+I0803 17:01:13.970847  5831 solver.cpp:337] Iteration 0, Testing net (#0)
+I0803 17:01:15.818922  5831 blocking_queue.cpp:50] Data layer prefetch queue empty
+I0803 17:02:10.961230  5831 solver.cpp:404]     Test net output #0: local/loss = 6.95087e+10 (* 1 = 6.95087e+10 loss)
+I0803 17:02:10.961336  5831 solver.cpp:404]     Test net output #1: loss = 3.83568 (* 1 = 3.83568 loss)
+I0803 17:02:10.961349  5831 solver.cpp:404]     Test net output #2: theta_loss = 0 (* 1 = 0 loss)
+I0803 17:02:11.780169  5831 solver.cpp:228] Iteration 0, loss = 7.28844e+10
+I0803 17:02:11.780230  5831 solver.cpp:244]     Train net output #0: local/loss = 7.28844e+10 (* 1 = 7.28844e+10 loss)
+I0803 17:02:11.780242  5831 solver.cpp:244]     Train net output #1: loss = 3.99318 (* 1 = 3.99318 loss)
+I0803 17:02:11.780251  5831 solver.cpp:244]     Train net output #2: theta_loss = 0 (* 1 = 0 loss)
+I0803 17:02:11.780283  5831 sgd_solver.cpp:106] Iteration 0, lr = 0.0001
+I0803 17:02:12.185427  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3.24584e+06 > 10) by scale factor 3.08086e-06
+I0803 17:02:13.169173  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 47256.4 > 10) by scale factor 0.000211611
+I0803 17:02:13.788475  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 15949.7 > 10) by scale factor 0.000626972
+I0803 17:02:14.977229  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 8846.07 > 10) by scale factor 0.00113045
+I0803 17:02:16.265278  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 6106.17 > 10) by scale factor 0.00163769
+I0803 17:02:17.550729  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4921.22 > 10) by scale factor 0.00203201
+I0803 17:02:18.832747  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5021.65 > 10) by scale factor 0.00199138
+I0803 17:02:20.112722  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4771.49 > 10) by scale factor 0.00209578
+I0803 17:02:21.387810  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5632.18 > 10) by scale factor 0.00177551
+I0803 17:02:22.660984  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7284.78 > 10) by scale factor 0.00137272
+I0803 17:02:23.935401  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 10311.5 > 10) by scale factor 0.000969788
+I0803 17:02:25.210003  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 18711.4 > 10) by scale factor 0.000534434
+I0803 17:02:26.484236  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 26437.3 > 10) by scale factor 0.000378253
+I0803 17:02:27.765820  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 28210.2 > 10) by scale factor 0.000354482
+I0803 17:02:29.051743  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13881.8 > 10) by scale factor 0.000720369
+I0803 17:02:30.334246  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 8726.38 > 10) by scale factor 0.00114595
+I0803 17:02:31.619133  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7576 > 10) by scale factor 0.00131996
+I0803 17:02:32.906572  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5144.67 > 10) by scale factor 0.00194376
+I0803 17:02:34.189502  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4858.71 > 10) by scale factor 0.00205816
+I0803 17:02:35.469883  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4757.17 > 10) by scale factor 0.00210209
+I0803 17:02:36.396996  5831 solver.cpp:228] Iteration 20, loss = 262001
+I0803 17:02:36.397078  5831 solver.cpp:244]     Train net output #0: local/loss = 262287 (* 1 = 262287 loss)
+I0803 17:02:36.397089  5831 solver.cpp:244]     Train net output #1: loss = 3.75208 (* 1 = 3.75208 loss)
+I0803 17:02:36.397101  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00102302 (* 1 = 0.00102302 loss)
+I0803 17:02:36.397116  5831 sgd_solver.cpp:106] Iteration 20, lr = 9.99975e-05
+I0803 17:02:36.756325  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4947.63 > 10) by scale factor 0.00202117
+I0803 17:02:38.042661  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5379.01 > 10) by scale factor 0.00185908
+I0803 17:02:39.336693  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 6993.01 > 10) by scale factor 0.00143
+I0803 17:02:40.637188  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 6939.74 > 10) by scale factor 0.00144098
+I0803 17:02:41.921844  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 8031.05 > 10) by scale factor 0.00124517
+I0803 17:02:43.199666  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7098.44 > 10) by scale factor 0.00140876
+I0803 17:02:44.480459  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7100.89 > 10) by scale factor 0.00140827
+I0803 17:02:45.637461  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5665.04 > 10) by scale factor 0.00176521
+I0803 17:02:46.871785  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5368.05 > 10) by scale factor 0.00186288
+I0803 17:02:48.147171  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5051.72 > 10) by scale factor 0.00197952
+I0803 17:02:49.423552  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5045.73 > 10) by scale factor 0.00198187
+I0803 17:02:50.709987  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5676.12 > 10) by scale factor 0.00176177
+I0803 17:02:51.995784  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 6516.13 > 10) by scale factor 0.00153465
+I0803 17:02:53.280282  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7928.34 > 10) by scale factor 0.0012613
+I0803 17:02:54.566397  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 10716 > 10) by scale factor 0.000933183
+I0803 17:02:55.847410  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 14505.3 > 10) by scale factor 0.000689403
+I0803 17:02:57.135052  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 46041.7 > 10) by scale factor 0.000217194
+I0803 17:02:58.422014  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 48052.6 > 10) by scale factor 0.000208105
+I0803 17:02:59.712957  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 163990 > 10) by scale factor 6.09793e-05
+I0803 17:03:01.004467  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 73237.4 > 10) by scale factor 0.000136542
+I0803 17:03:01.923219  5831 solver.cpp:228] Iteration 40, loss = 4.10287e+07
+I0803 17:03:01.923280  5831 solver.cpp:244]     Train net output #0: local/loss = 4.10291e+07 (* 1 = 4.10291e+07 loss)
+I0803 17:03:01.923291  5831 solver.cpp:244]     Train net output #1: loss = 3.56262 (* 1 = 3.56262 loss)
+I0803 17:03:01.923302  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00478153 (* 1 = 0.00478153 loss)
+I0803 17:03:01.923316  5831 sgd_solver.cpp:106] Iteration 40, lr = 9.9995e-05
+I0803 17:03:02.297004  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 33196 > 10) by scale factor 0.000301241
+I0803 17:03:03.577246  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 110660 > 10) by scale factor 9.03667e-05
+I0803 17:03:04.850955  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 35998.6 > 10) by scale factor 0.000277789
+I0803 17:03:06.131917  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 394026 > 10) by scale factor 2.5379e-05
+I0803 17:03:07.419342  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 30230.3 > 10) by scale factor 0.000330794
+I0803 17:03:08.707456  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 14891.6 > 10) by scale factor 0.000671519
+I0803 17:03:09.991540  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 9684.53 > 10) by scale factor 0.00103257
+I0803 17:03:11.280666  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 8278.19 > 10) by scale factor 0.00120799
+I0803 17:03:12.562238  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7855.47 > 10) by scale factor 0.001273
+I0803 17:03:13.848374  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5592 > 10) by scale factor 0.00178827
+I0803 17:03:15.136587  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4583.2 > 10) by scale factor 0.00218188
+I0803 17:03:16.417608  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4097.9 > 10) by scale factor 0.00244027
+I0803 17:03:17.697556  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3536.02 > 10) by scale factor 0.00282804
+I0803 17:03:18.984231  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3120 > 10) by scale factor 0.00320513
+I0803 17:03:20.093031  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2957.16 > 10) by scale factor 0.00338162
+I0803 17:03:21.376199  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2583.24 > 10) by scale factor 0.00387111
+I0803 17:03:22.555312  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2330.1 > 10) by scale factor 0.00429165
+I0803 17:03:23.174679  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2135.3 > 10) by scale factor 0.00468318
+I0803 17:03:24.104543  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2146.87 > 10) by scale factor 0.00465795
+I0803 17:03:25.391803  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2033.57 > 10) by scale factor 0.00491746
+I0803 17:03:26.283296  5831 solver.cpp:228] Iteration 60, loss = 29618.4
+I0803 17:03:26.283366  5831 solver.cpp:244]     Train net output #0: local/loss = 29868.5 (* 1 = 29868.5 loss)
+I0803 17:03:26.283380  5831 solver.cpp:244]     Train net output #1: loss = 3.54915 (* 1 = 3.54915 loss)
+I0803 17:03:26.283390  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00551244 (* 1 = 0.00551244 loss)
+I0803 17:03:26.283406  5831 sgd_solver.cpp:106] Iteration 60, lr = 9.99925e-05
+I0803 17:03:26.681617  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1756.66 > 10) by scale factor 0.00569261
+I0803 17:03:27.964308  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1633.58 > 10) by scale factor 0.00612152
+I0803 17:03:29.250754  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1552.01 > 10) by scale factor 0.00644326
+I0803 17:03:30.534088  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1361.72 > 10) by scale factor 0.00734368
+I0803 17:03:31.813230  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1346.77 > 10) by scale factor 0.00742518
+I0803 17:03:33.095410  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1162.68 > 10) by scale factor 0.0086008
+I0803 17:03:34.373725  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 994.333 > 10) by scale factor 0.010057
+I0803 17:03:35.653519  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 957.461 > 10) by scale factor 0.0104443
+I0803 17:03:36.929630  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 854.893 > 10) by scale factor 0.0116974
+I0803 17:03:38.206528  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 822.568 > 10) by scale factor 0.012157
+I0803 17:03:39.497881  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 819.862 > 10) by scale factor 0.0121972
+I0803 17:03:40.777268  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 772.621 > 10) by scale factor 0.012943
+I0803 17:03:42.067083  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 726.899 > 10) by scale factor 0.0137571
+I0803 17:03:42.865718  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 666.677 > 10) by scale factor 0.0149998
+I0803 17:03:44.085580  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 559.647 > 10) by scale factor 0.0178684
+I0803 17:03:45.358974  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 510.594 > 10) by scale factor 0.019585
+I0803 17:03:46.630828  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 484.272 > 10) by scale factor 0.0206495
+I0803 17:03:47.900656  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 444.33 > 10) by scale factor 0.0225058
+I0803 17:03:49.169265  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 421.719 > 10) by scale factor 0.0237125
+I0803 17:03:50.434154  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 390.637 > 10) by scale factor 0.0255992
+I0803 17:03:51.350397  5831 solver.cpp:228] Iteration 80, loss = 6228.12
+I0803 17:03:51.350450  5831 solver.cpp:244]     Train net output #0: local/loss = 6478.16 (* 1 = 6478.16 loss)
+I0803 17:03:51.350462  5831 solver.cpp:244]     Train net output #1: loss = 3.60018 (* 1 = 3.60018 loss)
+I0803 17:03:51.350473  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00450572 (* 1 = 0.00450572 loss)
+I0803 17:03:51.350486  5831 sgd_solver.cpp:106] Iteration 80, lr = 9.999e-05
+I0803 17:03:51.707465  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 386.645 > 10) by scale factor 0.0258635
+I0803 17:03:52.992743  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 407.708 > 10) by scale factor 0.0245273
+I0803 17:03:54.277271  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 369.42 > 10) by scale factor 0.0270695
+I0803 17:03:55.562939  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 399.923 > 10) by scale factor 0.0250048
+I0803 17:03:56.847424  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 413.826 > 10) by scale factor 0.0241647
+I0803 17:03:58.127195  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 480.521 > 10) by scale factor 0.0208107
+I0803 17:03:59.409409  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 420.159 > 10) by scale factor 0.0238005
+I0803 17:04:00.691581  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 432.897 > 10) by scale factor 0.0231002
+I0803 17:04:01.976225  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 473.897 > 10) by scale factor 0.0211016
+I0803 17:04:03.269924  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 470.662 > 10) by scale factor 0.0212467
+I0803 17:04:04.562387  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 423.831 > 10) by scale factor 0.0235943
+I0803 17:04:05.850406  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 437.273 > 10) by scale factor 0.022869
+I0803 17:04:07.128438  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 436.846 > 10) by scale factor 0.0228914
+I0803 17:04:08.408844  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 455.765 > 10) by scale factor 0.0219411
+I0803 17:04:09.692116  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 425.847 > 10) by scale factor 0.0234826
+I0803 17:04:10.976721  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 394.539 > 10) by scale factor 0.025346
+I0803 17:04:12.257604  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 417.522 > 10) by scale factor 0.0239508
+I0803 17:04:13.546762  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 359.217 > 10) by scale factor 0.0278383
+I0803 17:04:14.839442  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 417.327 > 10) by scale factor 0.0239621
+I0803 17:04:16.128561  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 349.16 > 10) by scale factor 0.0286401
+I0803 17:04:17.010665  5831 solver.cpp:228] Iteration 100, loss = 1694.31
+I0803 17:04:17.010727  5831 solver.cpp:244]     Train net output #0: local/loss = 1944.32 (* 1 = 1944.32 loss)
+I0803 17:04:17.010740  5831 solver.cpp:244]     Train net output #1: loss = 3.62043 (* 1 = 3.62043 loss)
+I0803 17:04:17.010751  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00345619 (* 1 = 0.00345619 loss)
+I0803 17:04:17.010764  5831 sgd_solver.cpp:106] Iteration 100, lr = 9.99875e-05
+I0803 17:04:17.421319  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 334.303 > 10) by scale factor 0.029913
+I0803 17:04:18.705938  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 293.139 > 10) by scale factor 0.0341136
+I0803 17:04:19.982961  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 288.703 > 10) by scale factor 0.0346376
+I0803 17:04:21.240841  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 281.496 > 10) by scale factor 0.0355244
+I0803 17:04:22.510818  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 278.417 > 10) by scale factor 0.0359174
+I0803 17:04:23.795960  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 250.161 > 10) by scale factor 0.0399742
+I0803 17:04:25.073992  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 271.787 > 10) by scale factor 0.0367935
+I0803 17:04:26.352581  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 248.93 > 10) by scale factor 0.0401719
+I0803 17:04:27.631727  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 253.989 > 10) by scale factor 0.0393717
+I0803 17:04:28.907470  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 233.875 > 10) by scale factor 0.0427579
+I0803 17:04:30.183187  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 243.697 > 10) by scale factor 0.0410346
+I0803 17:04:31.466699  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 224.592 > 10) by scale factor 0.0445252
+I0803 17:04:32.746109  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 220.868 > 10) by scale factor 0.045276
+I0803 17:04:34.022575  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 217.683 > 10) by scale factor 0.0459384
+I0803 17:04:35.292580  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 229.684 > 10) by scale factor 0.043538
+I0803 17:04:36.568922  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 234.617 > 10) by scale factor 0.0426227
+I0803 17:04:37.459707  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 235.415 > 10) by scale factor 0.0424781
+I0803 17:04:38.454483  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 231.439 > 10) by scale factor 0.0432079
+I0803 17:04:39.738282  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 242.268 > 10) by scale factor 0.0412765
+I0803 17:04:41.026732  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 265.657 > 10) by scale factor 0.0376425
+I0803 17:04:41.919745  5831 solver.cpp:228] Iteration 120, loss = 94.2387
+I0803 17:04:41.919805  5831 solver.cpp:244]     Train net output #0: local/loss = 344.689 (* 1 = 344.689 loss)
+I0803 17:04:41.919821  5831 solver.cpp:244]     Train net output #1: loss = 3.18746 (* 1 = 3.18746 loss)
+I0803 17:04:41.919836  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00272269 (* 1 = 0.00272269 loss)
+I0803 17:04:41.919857  5831 sgd_solver.cpp:106] Iteration 120, lr = 9.9985e-05
+I0803 17:04:42.315531  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 261.261 > 10) by scale factor 0.0382758
+I0803 17:04:43.596181  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 285.723 > 10) by scale factor 0.034999
+I0803 17:04:44.879061  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 278.198 > 10) by scale factor 0.0359457
+I0803 17:04:45.709252  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 308.24 > 10) by scale factor 0.0324423
+I0803 17:04:46.583264  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 322.594 > 10) by scale factor 0.0309987
+I0803 17:04:47.872414  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 338.466 > 10) by scale factor 0.0295451
+I0803 17:04:48.879837  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 366.722 > 10) by scale factor 0.0272686
+I0803 17:04:49.501780  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 409.288 > 10) by scale factor 0.0244327
+I0803 17:04:50.742302  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 459.078 > 10) by scale factor 0.0217828
+I0803 17:04:52.031496  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 469.466 > 10) by scale factor 0.0213008
+I0803 17:04:53.324271  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 509.962 > 10) by scale factor 0.0196093
+I0803 17:04:54.602727  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 587.037 > 10) by scale factor 0.0170347
+I0803 17:04:55.866405  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 602.297 > 10) by scale factor 0.0166031
+I0803 17:04:57.142866  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 670.481 > 10) by scale factor 0.0149147
+I0803 17:04:58.414965  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 704.181 > 10) by scale factor 0.0142009
+I0803 17:04:59.685597  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 789.475 > 10) by scale factor 0.0126667
+I0803 17:05:00.954788  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 846.844 > 10) by scale factor 0.0118085
+I0803 17:05:02.240808  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 944.088 > 10) by scale factor 0.0105922
+I0803 17:05:03.522819  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1017.31 > 10) by scale factor 0.00982987
+I0803 17:05:04.806164  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1083.81 > 10) by scale factor 0.00922667
+I0803 17:05:05.721654  5831 solver.cpp:228] Iteration 140, loss = 121.48
+I0803 17:05:05.721729  5831 solver.cpp:244]     Train net output #0: local/loss = 372.261 (* 1 = 372.261 loss)
+I0803 17:05:05.721741  5831 solver.cpp:244]     Train net output #1: loss = 2.85635 (* 1 = 2.85635 loss)
+I0803 17:05:05.721753  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00334674 (* 1 = 0.00334674 loss)
+I0803 17:05:05.721771  5831 sgd_solver.cpp:106] Iteration 140, lr = 9.99825e-05
+I0803 17:05:06.093753  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1174.52 > 10) by scale factor 0.00851411
+I0803 17:05:07.372263  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1279.49 > 10) by scale factor 0.00781563
+I0803 17:05:08.651852  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1456.97 > 10) by scale factor 0.00686356
+I0803 17:05:09.937300  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1508.74 > 10) by scale factor 0.00662806
+I0803 17:05:11.228397  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1627.34 > 10) by scale factor 0.00614502
+I0803 17:05:12.516055  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1766.32 > 10) by scale factor 0.0056615
+I0803 17:05:13.799901  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1864.12 > 10) by scale factor 0.00536445
+I0803 17:05:15.096282  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2020.3 > 10) by scale factor 0.00494977
+I0803 17:05:16.380673  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2037.14 > 10) by scale factor 0.00490884
+I0803 17:05:17.667515  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2147.06 > 10) by scale factor 0.00465754
+I0803 17:05:18.945472  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2189.99 > 10) by scale factor 0.00456624
+I0803 17:05:19.990243  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2318.05 > 10) by scale factor 0.00431398
+I0803 17:05:20.604342  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2250.82 > 10) by scale factor 0.00444283
+I0803 17:05:21.219849  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2109.4 > 10) by scale factor 0.00474069
+I0803 17:05:22.245168  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2247.59 > 10) by scale factor 0.00444921
+I0803 17:05:23.533987  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2188.8 > 10) by scale factor 0.00456871
+I0803 17:05:24.820663  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2100.22 > 10) by scale factor 0.0047614
+I0803 17:05:26.104024  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1733.73 > 10) by scale factor 0.00576792
+I0803 17:05:26.933351  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1712.65 > 10) by scale factor 0.0058389
+I0803 17:05:27.551472  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1699.21 > 10) by scale factor 0.0058851
+I0803 17:05:28.000918  5831 solver.cpp:228] Iteration 160, loss = 167.557
+I0803 17:05:28.000999  5831 solver.cpp:244]     Train net output #0: local/loss = 418.146 (* 1 = 418.146 loss)
+I0803 17:05:28.001013  5831 solver.cpp:244]     Train net output #1: loss = 3.04761 (* 1 = 3.04761 loss)
+I0803 17:05:28.001025  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00401213 (* 1 = 0.00401213 loss)
+I0803 17:05:28.001041  5831 sgd_solver.cpp:106] Iteration 160, lr = 9.998e-05
+I0803 17:05:28.169077  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1827.36 > 10) by scale factor 0.00547236
+I0803 17:05:28.782109  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1961.11 > 10) by scale factor 0.00509915
+I0803 17:05:29.398316  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2355.92 > 10) by scale factor 0.00424463
+I0803 17:05:30.419191  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2771.48 > 10) by scale factor 0.00360818
+I0803 17:05:31.707800  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2572.07 > 10) by scale factor 0.00388792
+I0803 17:05:32.993111  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2901.62 > 10) by scale factor 0.00344635
+I0803 17:05:34.277122  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2524.03 > 10) by scale factor 0.00396192
+I0803 17:05:35.558014  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2299.45 > 10) by scale factor 0.00434886
+I0803 17:05:36.840685  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2444.06 > 10) by scale factor 0.00409156
+I0803 17:05:37.761770  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2715.7 > 10) by scale factor 0.00368229
+I0803 17:05:38.922204  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1993.22 > 10) by scale factor 0.00501701
+I0803 17:05:39.539491  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2040.47 > 10) by scale factor 0.00490084
+I0803 17:05:40.159610  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1901.21 > 10) by scale factor 0.00525982
+I0803 17:05:41.221165  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2150.97 > 10) by scale factor 0.00464906
+I0803 17:05:42.054378  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2107.48 > 10) by scale factor 0.004745
+I0803 17:05:42.767495  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2308.59 > 10) by scale factor 0.00433164
+I0803 17:05:44.062232  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2353.78 > 10) by scale factor 0.00424848
+I0803 17:05:45.340306  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3066.78 > 10) by scale factor 0.00326075
+I0803 17:05:46.615886  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2408.29 > 10) by scale factor 0.00415233
+I0803 17:05:47.898531  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3402.4 > 10) by scale factor 0.0029391
+I0803 17:05:48.825608  5831 solver.cpp:228] Iteration 180, loss = 135.389
+I0803 17:05:48.825687  5831 solver.cpp:244]     Train net output #0: local/loss = 386.172 (* 1 = 386.172 loss)
+I0803 17:05:48.825701  5831 solver.cpp:244]     Train net output #1: loss = 2.85339 (* 1 = 2.85339 loss)
+I0803 17:05:48.825713  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00395024 (* 1 = 0.00395024 loss)
+I0803 17:05:48.825729  5831 sgd_solver.cpp:106] Iteration 180, lr = 9.99775e-05
+I0803 17:05:49.183513  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3443.51 > 10) by scale factor 0.00290401
+I0803 17:05:50.462815  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2880.2 > 10) by scale factor 0.00347198
+I0803 17:05:51.748698  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2281.23 > 10) by scale factor 0.0043836
+I0803 17:05:53.039703  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1837.29 > 10) by scale factor 0.00544279
+I0803 17:05:54.336547  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2581.15 > 10) by scale factor 0.00387424
+I0803 17:05:55.630102  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2213.62 > 10) by scale factor 0.00451748
+I0803 17:05:56.921375  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2123.73 > 10) by scale factor 0.00470869
+I0803 17:05:58.202519  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2279.4 > 10) by scale factor 0.00438713
+I0803 17:05:59.488545  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2543.45 > 10) by scale factor 0.00393167
+I0803 17:06:00.773988  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2063.1 > 10) by scale factor 0.00484708
+I0803 17:06:02.057948  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2811.21 > 10) by scale factor 0.00355718
+I0803 17:06:03.341853  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3142.86 > 10) by scale factor 0.00318181
+I0803 17:06:04.629560  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1564.64 > 10) by scale factor 0.00639124
+I0803 17:06:05.915676  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2309.48 > 10) by scale factor 0.00432998
+I0803 17:06:07.206004  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2400.08 > 10) by scale factor 0.00416652
+I0803 17:06:08.493777  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3059.84 > 10) by scale factor 0.00326814
+I0803 17:06:09.781988  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2690.34 > 10) by scale factor 0.00371701
+I0803 17:06:11.063540  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1848.78 > 10) by scale factor 0.00540897
+I0803 17:06:12.351158  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1721.65 > 10) by scale factor 0.00580839
+I0803 17:06:13.628906  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1795.02 > 10) by scale factor 0.00557097
+I0803 17:06:14.508092  5831 solver.cpp:228] Iteration 200, loss = 359.348
+I0803 17:06:14.508358  5831 solver.cpp:244]     Train net output #0: local/loss = 610.119 (* 1 = 610.119 loss)
+I0803 17:06:14.508389  5831 solver.cpp:244]     Train net output #1: loss = 2.86586 (* 1 = 2.86586 loss)
+I0803 17:06:14.508407  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00354471 (* 1 = 0.00354471 loss)
+I0803 17:06:14.508426  5831 sgd_solver.cpp:106] Iteration 200, lr = 9.9975e-05
+I0803 17:06:14.913842  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2089 > 10) by scale factor 0.00478699
+I0803 17:06:16.184553  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 1795.11 > 10) by scale factor 0.00557068
+I0803 17:06:17.466727  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2387.41 > 10) by scale factor 0.00418864
+I0803 17:06:18.747493  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2591.12 > 10) by scale factor 0.00385934
+I0803 17:06:20.031317  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2684.17 > 10) by scale factor 0.00372555
+I0803 17:06:21.315168  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2526.78 > 10) by scale factor 0.00395761
+I0803 17:06:22.600903  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2851.49 > 10) by scale factor 0.00350694
+I0803 17:06:23.881597  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4257.93 > 10) by scale factor 0.00234856
+I0803 17:06:25.158953  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2331.04 > 10) by scale factor 0.00428993
+I0803 17:06:26.440387  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 2109.41 > 10) by scale factor 0.00474067
+I0803 17:06:27.727119  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4386.65 > 10) by scale factor 0.00227965
+I0803 17:06:29.021209  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3995.32 > 10) by scale factor 0.00250293
+I0803 17:06:30.311945  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 4764.52 > 10) by scale factor 0.00209885
+I0803 17:06:31.598330  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 5452.46 > 10) by scale factor 0.00183404
+I0803 17:06:32.881387  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 3165.83 > 10) by scale factor 0.00315873
+I0803 17:06:34.164964  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7324.24 > 10) by scale factor 0.00136533
+I0803 17:06:35.448693  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 8915.69 > 10) by scale factor 0.00112162
+I0803 17:06:36.736186  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 7692.78 > 10) by scale factor 0.00129992
+I0803 17:06:38.023995  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 9936.88 > 10) by scale factor 0.00100635
+I0803 17:06:39.298637  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 9670.14 > 10) by scale factor 0.00103411
+I0803 17:06:40.186177  5831 solver.cpp:228] Iteration 220, loss = 2826.82
+I0803 17:06:40.186234  5831 solver.cpp:244]     Train net output #0: local/loss = 3077.52 (* 1 = 3077.52 loss)
+I0803 17:06:40.186246  5831 solver.cpp:244]     Train net output #1: loss = 2.93601 (* 1 = 2.93601 loss)
+I0803 17:06:40.186256  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00344446 (* 1 = 0.00344446 loss)
+I0803 17:06:40.186269  5831 sgd_solver.cpp:106] Iteration 220, lr = 9.99725e-05
+I0803 17:06:40.568423  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13226.3 > 10) by scale factor 0.000756072
+I0803 17:06:41.835850  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 12082 > 10) by scale factor 0.000827677
+I0803 17:06:43.103214  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 6044.29 > 10) by scale factor 0.00165445
+I0803 17:06:44.387709  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 8390.48 > 10) by scale factor 0.00119183
+I0803 17:06:45.678391  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13679.2 > 10) by scale factor 0.000731037
+I0803 17:06:46.950963  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13184.9 > 10) by scale factor 0.000758441
+I0803 17:06:47.928036  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13670.9 > 10) by scale factor 0.000731483
+I0803 17:06:48.847173  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 18646 > 10) by scale factor 0.000536309
+I0803 17:06:50.000684  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 18123.8 > 10) by scale factor 0.00055176
+I0803 17:06:51.274492  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 12893.9 > 10) by scale factor 0.000775563
+I0803 17:06:52.547019  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 10884.9 > 10) by scale factor 0.000918702
+I0803 17:06:53.820999  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13013.6 > 10) by scale factor 0.000768427
+I0803 17:06:55.105787  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 15451.1 > 10) by scale factor 0.000647205
+I0803 17:06:56.394925  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13047.1 > 10) by scale factor 0.000766452
+I0803 17:06:57.666295  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 16468.8 > 10) by scale factor 0.00060721
+I0803 17:06:58.941275  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 36013.8 > 10) by scale factor 0.000277672
+I0803 17:07:00.215441  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 19681.1 > 10) by scale factor 0.000508102
+I0803 17:07:01.491680  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13967.4 > 10) by scale factor 0.000715952
+I0803 17:07:02.779058  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 18999.1 > 10) by scale factor 0.000526339
+I0803 17:07:04.065734  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 15271.4 > 10) by scale factor 0.000654818
+I0803 17:07:04.994873  5831 solver.cpp:228] Iteration 240, loss = 3425.62
+I0803 17:07:04.994927  5831 solver.cpp:244]     Train net output #0: local/loss = 3676.45 (* 1 = 3676.45 loss)
+I0803 17:07:04.994940  5831 solver.cpp:244]     Train net output #1: loss = 2.80349 (* 1 = 2.80349 loss)
+I0803 17:07:04.994949  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00348376 (* 1 = 0.00348376 loss)
+I0803 17:07:04.994963  5831 sgd_solver.cpp:106] Iteration 240, lr = 9.997e-05
+I0803 17:07:05.351076  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 17361.4 > 10) by scale factor 0.000575992
+I0803 17:07:06.631705  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 15262.9 > 10) by scale factor 0.000655182
+I0803 17:07:07.918157  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13873.3 > 10) by scale factor 0.00072081
+I0803 17:07:09.205926  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 12090.4 > 10) by scale factor 0.000827105
+I0803 17:07:10.487547  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 29378.5 > 10) by scale factor 0.000340385
+I0803 17:07:11.774332  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 19571.8 > 10) by scale factor 0.00051094
+I0803 17:07:13.060904  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 28461.3 > 10) by scale factor 0.000351354
+I0803 17:07:14.353320  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 33912.2 > 10) by scale factor 0.000294879
+I0803 17:07:15.633013  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 13719.9 > 10) by scale factor 0.000728871
+I0803 17:07:16.912483  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 12843 > 10) by scale factor 0.000778632
+I0803 17:07:18.187883  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 10484.8 > 10) by scale factor 0.000953758
+I0803 17:07:19.465103  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 9433.16 > 10) by scale factor 0.00106009
+I0803 17:07:20.623807  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 24843.6 > 10) by scale factor 0.000402518
+I0803 17:07:21.242965  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 25854.1 > 10) by scale factor 0.000386786
+I0803 17:07:21.860013  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 25452.6 > 10) by scale factor 0.000392887
+I0803 17:07:22.554744  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 37646.2 > 10) by scale factor 0.000265631
+I0803 17:07:23.833617  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 43835.7 > 10) by scale factor 0.000228125
+I0803 17:07:25.016086  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 36691.4 > 10) by scale factor 0.000272543
+I0803 17:07:25.636070  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 37406.4 > 10) by scale factor 0.000267334
+I0803 17:07:26.255748  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 23800.4 > 10) by scale factor 0.00042016
+I0803 17:07:26.707166  5831 solver.cpp:228] Iteration 260, loss = 4085.48
+I0803 17:07:26.707252  5831 solver.cpp:244]     Train net output #0: local/loss = 4336.35 (* 1 = 4336.35 loss)
+I0803 17:07:26.707264  5831 solver.cpp:244]     Train net output #1: loss = 2.77119 (* 1 = 2.77119 loss)
+I0803 17:07:26.707276  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00406288 (* 1 = 0.00406288 loss)
+I0803 17:07:26.707291  5831 sgd_solver.cpp:106] Iteration 260, lr = 9.99675e-05
+I0803 17:07:26.875643  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 27359.8 > 10) by scale factor 0.0003655
+I0803 17:07:27.832502  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 16772.5 > 10) by scale factor 0.000596213
+I0803 17:07:28.768455  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 17743.4 > 10) by scale factor 0.00056359
+I0803 17:07:29.457518  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 17815.3 > 10) by scale factor 0.000561314
+I0803 17:07:30.757658  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 35413 > 10) by scale factor 0.000282382
+I0803 17:07:32.042021  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 21408.1 > 10) by scale factor 0.000467113
+I0803 17:07:33.315979  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 24833.7 > 10) by scale factor 0.000402679
+I0803 17:07:34.475672  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 41331.6 > 10) by scale factor 0.000241946
+I0803 17:07:35.552904  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 34723.8 > 10) by scale factor 0.000287987
+I0803 17:07:36.845064  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 36540.6 > 10) by scale factor 0.000273668
+I0803 17:07:38.135087  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 44512.1 > 10) by scale factor 0.000224658
+I0803 17:07:39.423658  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 21498.4 > 10) by scale factor 0.00046515
+I0803 17:07:40.707902  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 16584.3 > 10) by scale factor 0.00060298
+I0803 17:07:41.997356  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 26722.8 > 10) by scale factor 0.000374213
+I0803 17:07:43.281509  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 48014.9 > 10) by scale factor 0.000208269
+I0803 17:07:44.568785  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 61072.3 > 10) by scale factor 0.00016374
+I0803 17:07:45.850080  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 53366.7 > 10) by scale factor 0.000187383
+I0803 17:07:47.140277  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 86111.7 > 10) by scale factor 0.000116128
+I0803 17:07:48.431769  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 68106.4 > 10) by scale factor 0.000146829
+I0803 17:07:49.711604  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 62385.2 > 10) by scale factor 0.000160294
+I0803 17:07:50.592547  5831 solver.cpp:228] Iteration 280, loss = 8726.88
+I0803 17:07:50.592628  5831 solver.cpp:244]     Train net output #0: local/loss = 8977.61 (* 1 = 8977.61 loss)
+I0803 17:07:50.592640  5831 solver.cpp:244]     Train net output #1: loss = 2.90884 (* 1 = 2.90884 loss)
+I0803 17:07:50.592653  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00459497 (* 1 = 0.00459497 loss)
+I0803 17:07:50.592666  5831 sgd_solver.cpp:106] Iteration 280, lr = 9.9965e-05
+I0803 17:07:50.980769  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 60948.2 > 10) by scale factor 0.000164074
+I0803 17:07:52.248911  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 104702 > 10) by scale factor 9.55095e-05
+I0803 17:07:53.517513  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 45246.6 > 10) by scale factor 0.000221011
+I0803 17:07:54.787351  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 50890.8 > 10) by scale factor 0.000196499
+I0803 17:07:56.059350  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 43121.5 > 10) by scale factor 0.000231903
+I0803 17:07:57.327616  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 27157.6 > 10) by scale factor 0.000368221
+I0803 17:07:58.605763  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 46352.1 > 10) by scale factor 0.00021574
+I0803 17:07:59.891767  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 19964.7 > 10) by scale factor 0.000500885
+I0803 17:08:01.180179  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 65124.4 > 10) by scale factor 0.000153552
+I0803 17:08:02.471644  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 29601.8 > 10) by scale factor 0.000337817
+I0803 17:08:03.747010  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 32602.7 > 10) by scale factor 0.000306723
+I0803 17:08:05.032528  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 47908.8 > 10) by scale factor 0.00020873
+I0803 17:08:06.313419  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 41102.9 > 10) by scale factor 0.000243292
+I0803 17:08:07.602697  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 47508.1 > 10) by scale factor 0.00021049
+I0803 17:08:08.887874  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 48467.7 > 10) by scale factor 0.000206323
+I0803 17:08:10.178104  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 58328.8 > 10) by scale factor 0.000171442
+I0803 17:08:11.469374  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 116249 > 10) by scale factor 8.60225e-05
+I0803 17:08:12.749531  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 45387.3 > 10) by scale factor 0.000220326
+I0803 17:08:14.032232  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 92190.1 > 10) by scale factor 0.000108472
+I0803 17:08:15.316826  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 93745 > 10) by scale factor 0.000106672
+I0803 17:08:16.244434  5831 solver.cpp:228] Iteration 300, loss = 5489.63
+I0803 17:08:16.244527  5831 solver.cpp:244]     Train net output #0: local/loss = 5740.39 (* 1 = 5740.39 loss)
+I0803 17:08:16.244541  5831 solver.cpp:244]     Train net output #1: loss = 2.86808 (* 1 = 2.86808 loss)
+I0803 17:08:16.244554  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.00531514 (* 1 = 0.00531514 loss)
+I0803 17:08:16.244570  5831 sgd_solver.cpp:106] Iteration 300, lr = 9.99625e-05
+I0803 17:08:16.599956  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 96538.4 > 10) by scale factor 0.000103586
+I0803 17:08:17.887876  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 77489.7 > 10) by scale factor 0.000129049
+I0803 17:08:19.183184  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 93393.4 > 10) by scale factor 0.000107074
+I0803 17:08:20.465587  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 76156.9 > 10) by scale factor 0.000131308
+I0803 17:08:21.750469  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 47039.9 > 10) by scale factor 0.000212585
+I0803 17:08:23.046021  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 38548.4 > 10) by scale factor 0.000259414
+I0803 17:08:24.328327  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 28098.3 > 10) by scale factor 0.000355893
+I0803 17:08:25.363620  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 14835.6 > 10) by scale factor 0.000674053
+I0803 17:08:25.979085  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 51752.3 > 10) by scale factor 0.000193228
+I0803 17:08:27.068372  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 54544.6 > 10) by scale factor 0.000183336
+I0803 17:08:28.349926  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 111197 > 10) by scale factor 8.99304e-05
+I0803 17:08:29.628473  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 128200 > 10) by scale factor 7.80029e-05
+I0803 17:08:30.915089  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 142497 > 10) by scale factor 7.01768e-05
+I0803 17:08:32.205054  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 145639 > 10) by scale factor 6.86629e-05
+I0803 17:08:33.497030  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 216450 > 10) by scale factor 4.62e-05
+I0803 17:08:34.783216  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 189271 > 10) by scale factor 5.28343e-05
+I0803 17:08:36.068516  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 136622 > 10) by scale factor 7.31948e-05
+I0803 17:08:37.365072  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 131207 > 10) by scale factor 7.62154e-05
+I0803 17:08:38.643430  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 94369.4 > 10) by scale factor 0.000105967
+I0803 17:08:39.916280  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 80586.5 > 10) by scale factor 0.00012409
+I0803 17:08:40.798430  5831 solver.cpp:228] Iteration 320, loss = 4863.48
+I0803 17:08:40.798493  5831 solver.cpp:244]     Train net output #0: local/loss = 5114.46 (* 1 = 5114.46 loss)
+I0803 17:08:40.798506  5831 solver.cpp:244]     Train net output #1: loss = 2.65605 (* 1 = 2.65605 loss)
+I0803 17:08:40.798516  5831 solver.cpp:244]     Train net output #2: theta_loss = 0.0064471 (* 1 = 0.0064471 loss)
+I0803 17:08:40.798530  5831 sgd_solver.cpp:106] Iteration 320, lr = 9.996e-05
+I0803 17:08:41.186532  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 65697.2 > 10) by scale factor 0.000152214
+I0803 17:08:42.455937  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 26301.2 > 10) by scale factor 0.00038021
+I0803 17:08:43.727183  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 32981.9 > 10) by scale factor 0.000303197
+I0803 17:08:45.001080  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 38343.5 > 10) by scale factor 0.000260801
+I0803 17:08:46.284224  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 43481.6 > 10) by scale factor 0.000229982
+I0803 17:08:47.573338  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 43706.7 > 10) by scale factor 0.000228798
+I0803 17:08:48.855594  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 21153.8 > 10) by scale factor 0.000472729
+I0803 17:08:50.140975  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 24759.6 > 10) by scale factor 0.000403885
+I0803 17:08:51.427441  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 45895.6 > 10) by scale factor 0.000217886
+I0803 17:08:52.706238  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 52300.3 > 10) by scale factor 0.000191204
+I0803 17:08:53.992727  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 66214.6 > 10) by scale factor 0.000151024
+I0803 17:08:55.280441  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 84116.3 > 10) by scale factor 0.000118883
+I0803 17:08:56.568248  5831 sgd_solver.cpp:92] Gradient clipping: scaling down gradients (L2 norm 63313.2 > 10) by scale factor 0.000157945
+I0803 17:08:56.568847  5831 solver.cpp:454] Snapshotting to binary proto file model/facial_point_iter_333.caffemodel
+I0803 17:09:05.524085  5831 sgd_solver.cpp:273] Snapshotting solver state to binary proto file model/facial_point_iter_333.solverstate
+I0803 17:09:06.581516  5831 solver.cpp:301] Optimization stopped early.
+I0803 17:09:06.581563  5831 caffe.cpp:222] Optimization Done.

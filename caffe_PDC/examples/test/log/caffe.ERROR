@@ -1,0 +1,4 @@
+Log file created at: 2016/08/03 16:55:56
+Running on machine: root0-SCW4350-159
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+F0803 16:55:56.801409  5421 net.cpp:765] Cannot copy param 0 weights from layer 'loc_reg_'; shape mismatch.  Source param shape is 4 136 (544); target param shape is 6 136 (816). To learn this layer's parameters from scratch rather than copying from a saved net, rename the layer.
