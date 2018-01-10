@@ -1,6 +1,8 @@
 # PDC-ICCV2017
 This is the code of ICCV 2017 paper, "Pose-driven Deep Convolutional Model for Person Re-identification"
 
+
+### Citations
 @inproceedings{su2017pose,
 
   title={Pose-driven Deep Convolutional Model for Person Re-identification},
